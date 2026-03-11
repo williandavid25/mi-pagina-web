@@ -127,8 +127,8 @@ function buildFilterChips(products, activeCat, activeGen) {
 
     const chipsConfig = [
         { label: 'Todos', cat: null, gen: null },
-        { label: '♂ Hombre', cat: null, gen: 'hombre' },
-        { label: '♀ Mujer', cat: null, gen: 'mujer' },
+        { label: 'Hombre', cat: null, gen: 'hombre' },
+        { label: 'Mujer', cat: null, gen: 'mujer' },
         { label: 'Buzos', cat: 'buzos', gen: null },
         { label: 'Camisetas', cat: 'camisetas', gen: null },
         { label: 'Conjuntos', cat: 'conjuntos', gen: null },
@@ -138,17 +138,16 @@ function buildFilterChips(products, activeCat, activeGen) {
 
     container.innerHTML = chipsConfig.map(chip => {
         const isActive = (chip.cat === activeCat && chip.gen === activeGen) ? 'active' : '';
-        const extra = chip.gen ? `gender-chip active-${chip.gen || ''}` : '';
-        return `<button class="chip ${extra} ${isActive}" data-cat="${chip.cat || ''}" data-gen="${chip.gen || ''}">${chip.label}</button>`;
+        return `<button class="filter-btn ${isActive}" data-cat="${chip.cat || ''}" data-gender="${chip.gen || ''}">${chip.label.toUpperCase()}</button>`;
     }).join('');
 
-    container.querySelectorAll('.chip').forEach(chip => {
-        chip.addEventListener('click', (e) => {
-            container.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    container.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            container.querySelectorAll('.filter-btn').forEach(c => c.classList.remove('active'));
             e.target.classList.add('active');
 
             const cat = e.target.dataset.cat || null;
-            const gen = e.target.dataset.gen || null;
+            const gen = e.target.dataset.gender || null;
             const sort = document.getElementById('sort-select').value;
 
             updateHero(cat, gen);

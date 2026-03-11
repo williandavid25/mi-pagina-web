@@ -352,15 +352,17 @@ function setupUIInteractions() {
         });
     }
 
-    // NOTE: Search is now handled by initSearch() from search.js
     // Filter by gender — real filtering of product cards
     const filterBtns = document.querySelectorAll('.filter-btn');
     filterBtns.forEach(btn => {
+        // Force the style to be clean
+        btn.style.transition = 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)';
+        
         btn.addEventListener('click', (e) => {
             filterBtns.forEach(b => b.classList.remove('active'));
             e.target.classList.add('active');
 
-            const genero = e.target.dataset.genero || ''; // '' = todos
+            const genero = e.target.dataset.gender || ''; // '' = todos
             const cards = document.querySelectorAll('.product-card');
 
             cards.forEach(card => {
