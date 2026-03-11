@@ -176,16 +176,8 @@ function setupAuthInteractions() {
             return;
         }
 
-        if (e.target.closest('#cart-signout-btn')) {
-            e.stopPropagation();
-            signOut();
-        }
         if (e.target.closest('#auth-close-btn') || e.target.id === 'auth-modal-overlay') {
             closeAuthModal();
-        }
-        if (e.target.closest('#header-user-avatar')) {
-            e.stopPropagation();
-            if (confirm('¿Cerrar sesión?')) signOut();
         }
     });
 
