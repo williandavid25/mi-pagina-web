@@ -4,7 +4,7 @@ import { MiniCart } from '../components/cart/MiniCart.js';
 import { CheckoutModal } from '../components/forms/CheckoutForm.js';
 import { initCart, addToCart, openCart, procesarCompraWhatsApp } from './cartState.js';
 import { AuthModal } from '../components/auth/AuthModal.js';
-import { initGoogleAuth, openAuthModal, closeAuthModal, signOut, updateCartAuthUI, updateHeaderAuthUI, getUser } from './auth.js';
+import { initGoogleAuth, openAuthModal, closeAuthModal, signOut, simulateEmailAuth, updateCartAuthUI, updateHeaderAuthUI, getUser } from './auth.js';
 import { initSearch } from './search.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -70,81 +70,131 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 function setupAuthInteractions() {
-    // --- Login banner in cart → opens auth modal ---
+
+    // ── Current auth mode ─────────────────────────────────────────
+    let authMode = 'register'; // 'login' | 'register'
+
+    function setAuthMode(mode) {
+        authMode = mode;
+        const title        = document.getElementById('auth-modal-title');
+        const submitText   = document.getElementById('auth-submit-text');
+        const toggleBtn    = document.getElementById('auth-toggle-mode');
+        const footerQ      = document.getElementById('auth-footer-question');
+        const benefits     = document.querySelector('.auth-benefits');
+        const nameField    = document.getElementById('auth-name-field');
+        const confirmField = document.getElementById('auth-confirm-field');
+        const errorMsg     = document.getElementById('auth-error-msg');
+
+        if (errorMsg) errorMsg.textContent = '';
+
+        if (mode === 'register') {
+            if (title)        title.textContent          = 'Crea tu cuenta';
+            if (submitText)   submitText.textContent     = 'CREAR CUENTA';
+            if (toggleBtn)    toggleBtn.textContent      = 'Inicia sesión';
+            if (footerQ)      footerQ.textContent        = '¿Ya tienes cuenta?';
+            if (benefits)     benefits.style.display     = '';
+            if (nameField)    nameField.style.display    = '';
+            if (confirmField) confirmField.style.display = '';
+        } else {
+            if (title)        title.textContent          = 'Bienvenido de vuelta';
+            if (submitText)   submitText.textContent     = 'INICIAR SESIÓN';
+            if (toggleBtn)    toggleBtn.textContent      = 'Regístrate gratis';
+            if (footerQ)      footerQ.textContent        = '¿No tienes cuenta?';
+            if (benefits)     benefits.style.display     = 'none';
+            if (nameField)    nameField.style.display    = 'none';
+            if (confirmField) confirmField.style.display = 'none';
+        }
+    }
+
+    // ── Password visibility toggle ────────────────────────────────
     document.addEventListener('click', (e) => {
-        if (e.target.closest('#cart-login-banner')) {
+        const btn = e.target.closest('.auth-toggle-password');
+        if (!btn) return;
+        const input = document.getElementById(btn.dataset.target);
+        if (!input) return;
+        input.type = input.type === 'password' ? 'text' : 'password';
+    });
+
+    // ── Toggle mode (login ↔ register) ───────────────────────────
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('#auth-toggle-mode')) return;
+        setAuthMode(authMode === 'register' ? 'login' : 'register');
+    });
+
+    // ── Open / Close Modal ────────────────────────────────────────
+    document.addEventListener('click', (e) => {
+        if (
+            e.target.closest('#cart-login-banner') ||
+            e.target.closest('#cart-login-banner-filled') ||
+            e.target.id === 'cart-login-trigger' ||
+            e.target.closest('#header-login-btn')
+        ) {
             openAuthModal();
+            setTimeout(() => setAuthMode('register'), 50);
         }
-        if (e.target.closest('#cart-signout-btn')) {
-            signOut();
-        }
-        if (e.target.closest('#cart-login-btn') || e.target.closest('#header-login-btn')) {
-            openAuthModal();
-        }
-        if (e.target.closest('#auth-close-btn') || e.target.id === 'auth-modal-overlay') {
-            closeAuthModal();
-        }
-        // Header user avatar → also triggers sign-out dropdown (future)
+        if (e.target.closest('#cart-signout-btn')) signOut();
+        if (e.target.closest('#auth-close-btn') || e.target.id === 'auth-modal-overlay') closeAuthModal();
         if (e.target.closest('#header-user-avatar')) {
             if (confirm('¿Cerrar sesión?')) signOut();
         }
     });
 
-    // --- Email form (mock / fallback sign-in) ---
-    document.addEventListener('submit', (e) => {
+    // ── Unified form submit ───────────────────────────────────────
+    document.addEventListener('submit', async (e) => {
         if (!e.target.matches('#auth-email-form')) return;
         e.preventDefault();
 
-        const email    = document.getElementById('auth-email')?.value?.trim();
-        const password = document.getElementById('auth-password')?.value;
-        const errorMsg = document.getElementById('auth-error-msg');
-        const submitBtn = document.getElementById('btn-auth-submit');
-        const spinner   = document.getElementById('auth-spinner');
+        const email      = document.getElementById('auth-email')?.value?.trim();
+        const password   = document.getElementById('auth-password')?.value;
+        const name       = document.getElementById('auth-name')?.value?.trim();
+        const confirm2   = document.getElementById('auth-confirm')?.value;
+        const errorMsg   = document.getElementById('auth-error-msg');
+        const submitBtn  = document.getElementById('btn-auth-submit');
+        const spinner    = document.getElementById('auth-spinner');
         const submitText = document.getElementById('auth-submit-text');
+        const isRegister = authMode === 'register';
 
+        if (errorMsg) errorMsg.textContent = '';
+
+        // Validate
+        if (isRegister && !name) {
+            if (errorMsg) errorMsg.textContent = 'Por favor ingresa tu nombre completo.';
+            return;
+        }
         if (!email || !password) {
             if (errorMsg) errorMsg.textContent = 'Por favor completa todos los campos.';
             return;
         }
+        if (!email.includes('@') || !email.includes('.')) {
+            if (errorMsg) errorMsg.textContent = 'Ingresa un correo electrónico válido.';
+            return;
+        }
+        if (password.length < 6) {
+            if (errorMsg) errorMsg.textContent = 'La contraseña debe tener al menos 6 caracteres.';
+            return;
+        }
+        if (isRegister && confirm2 !== password) {
+            if (errorMsg) errorMsg.textContent = 'Las contraseñas no coinciden.';
+            return;
+        }
 
-        // Simulate loading
+        // Loading
         if (submitBtn) submitBtn.disabled = true;
-        if (spinner) spinner.style.display = 'inline-block';
+        if (spinner)   spinner.style.display = 'inline-block';
         if (submitText) submitText.textContent = '';
-        if (errorMsg) errorMsg.textContent = '';
 
-        setTimeout(() => {
-            // Mock: create a local user from the email (email/password is UI only — no backend)
-            const name = email.split('@')[0];
-            const mockUser = {
-                name:    name.charAt(0).toUpperCase() + name.slice(1),
-                email:   email,
-                picture: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=6F3ECD&color=fff&bold=true`,
-                sub:     'local_' + email,
-            };
-            localStorage.setItem('ellel_user', JSON.stringify(mockUser));
-            updateCartAuthUI(mockUser);
-            updateHeaderAuthUI(mockUser);
-            closeAuthModal();
+        try {
+            await simulateEmailAuth(email, password, isRegister, isRegister ? name : null);
+        } catch (err) {
+            if (errorMsg) errorMsg.textContent = 'Ocurrió un error, inténtalo de nuevo.';
+        } finally {
             if (submitBtn) submitBtn.disabled = false;
-            if (spinner) spinner.style.display = 'none';
-            if (submitText) submitText.textContent = 'INICIAR SESIÓN';
-        }, 1200);
+            if (spinner)   spinner.style.display = 'none';
+            if (submitText) submitText.textContent = isRegister ? 'CREAR CUENTA' : 'INICIAR SESIÓN';
+        }
     });
 
-    // Toggle register / login
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('#auth-toggle-mode')) return;
-        const btn = document.getElementById('auth-toggle-mode');
-        const title = document.querySelector('.auth-title');
-        const submitText = document.getElementById('auth-submit-text');
-        const isLogin = btn?.textContent === 'Regístrate gratis';
-        if (btn) btn.textContent = isLogin ? 'Inicia sesión' : 'Regístrate gratis';
-        if (title) title.textContent = isLogin ? 'Crea tu cuenta' : 'Bienvenido de vuelta';
-        if (submitText) submitText.textContent = isLogin ? 'CREAR CUENTA' : 'INICIAR SESIÓN';
-    });
-
-    // Wait for Google Identity Services to be ready, then init
+    // ── Google Sign-In ────────────────────────────────────────────
     if (window.google?.accounts?.id) {
         initGoogleAuth();
     } else {

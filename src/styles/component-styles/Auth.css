@@ -1,6 +1,6 @@
 /* ============================================================
    Auth Modal — Ellel Oversize
-   Premium dark glassmorphism design, fully responsive
+   Premium design, fully responsive, with Login/Register tabs
    ============================================================ */
 
 /* ── Overlay ── */
@@ -30,20 +30,120 @@
 /* ── Modal Card ── */
 .auth-modal {
     background: #fff;
-    border-radius: 24px;
-    padding: clamp(1.8rem, 5vw, 2.5rem);
+    border-radius: 20px;
+    padding: 1.4rem 1.5rem 1.2rem;
     width: 100%;
-    max-width: 420px;
-    max-height: 90vh;
+    max-width: 400px;
+    max-height: 92vh;
     overflow-y: auto;
+    overflow-x: hidden;
     position: relative;
-    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.28);
     animation: authModalIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 
 @keyframes authModalIn {
-    from { opacity: 0; transform: translateY(30px) scale(0.95); }
+    from { opacity: 0; transform: translateY(20px) scale(0.97); }
     to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ── Tabs ── */
+.auth-tabs {
+    display: flex;
+    border-radius: 12px;
+    background: #f4f4f4;
+    padding: 4px;
+    margin-bottom: 1.5rem;
+    gap: 4px;
+}
+
+.auth-tab {
+    flex: 1;
+    padding: 10px 8px;
+    border: none;
+    border-radius: 9px;
+    background: transparent;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #888;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.auth-tab.active {
+    background: #fff;
+    color: #000;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* ── Input wrapper (for password toggle) ── */
+.auth-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.auth-input-wrapper input {
+    width: 100%;
+    padding-right: 44px;
+}
+
+.auth-toggle-password {
+    position: absolute;
+    right: 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #aaa;
+    display: flex;
+    align-items: center;
+    transition: color 0.2s;
+}
+
+.auth-toggle-password:hover { color: #555; }
+
+/* ── Register button (red variant) ── */
+.btn-auth-submit--red {
+    background: #902126 !important;
+}
+.btn-auth-submit--red:hover { background: #72191d !important; }
+
+/* ── Google Fallback Button (when GIS SDK not loaded) ── */
+.auth-google-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    padding: 13px 20px;
+    background: #000;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+    letter-spacing: 0.01em;
+}
+.auth-google-fallback:hover { background: #222; transform: scale(1.01); }
+
+/* ── Mobile ── */
+@media (max-width: 480px) {
+    .auth-modal {
+        border-radius: 20px 20px 0 0;
+        max-height: 95vh;
+        margin-top: auto;
+        margin-bottom: 0;
+    }
+    .auth-modal-overlay {
+        align-items: flex-end;
+        padding: 0;
+    }
 }
 
 /* ── Close button ── */
@@ -69,12 +169,13 @@
 .auth-brand {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
-    margin-bottom: 1.5rem;
+    gap: 0.5rem;
+    margin-bottom: 0.9rem;
+    margin-top: 0.3rem;
 }
 
 .auth-logo {
-    width: 36px; height: 36px;
+    width: 30px; height: 30px;
     border-radius: 50%;
     object-fit: cover;
 }
@@ -82,43 +183,43 @@
 .auth-brand-name {
     font-family: 'Montserrat', sans-serif;
     font-weight: 900;
-    font-size: 1rem;
+    font-size: 0.85rem;
     text-transform: uppercase;
-    letter-spacing: -0.02em;
+    letter-spacing: 0.05em;
     color: #000;
 }
 
 /* ── Title ── */
 .auth-title {
     font-family: 'Montserrat', sans-serif;
-    font-size: clamp(1.5rem, 5vw, 2rem);
+    font-size: 1.6rem;
     font-weight: 900;
     color: #000;
     line-height: 1.1;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.3rem;
 }
 
 .auth-subtitle {
-    font-size: 0.9rem;
+    font-size: 0.82rem;
     color: #777;
-    line-height: 1.5;
-    margin-bottom: 1.4rem;
+    line-height: 1.4;
+    margin-bottom: 0.8rem;
 }
 
 /* ── Benefits ── */
 .auth-benefits {
     list-style: none;
-    padding: 0; margin: 0 0 1.4rem;
+    padding: 0; margin: 0 0 0.9rem;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.35rem;
 }
 
 .auth-benefits li {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    font-size: 0.85rem;
+    gap: 0.45rem;
+    font-size: 0.8rem;
     color: #444;
     font-weight: 500;
 }
@@ -131,8 +232,9 @@
 /* ── Google Sign-In wrapper ── */
 .auth-google-wrapper {
     display: flex;
+    flex-direction: column;
     justify-content: center;
-    margin-bottom: 1.2rem;
+    margin-bottom: 0.9rem;
 }
 
 .auth-google-wrapper > div {
@@ -144,7 +246,7 @@
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    margin-bottom: 1.2rem;
+    margin-bottom: 0.9rem;
 }
 
 .auth-divider::before,
@@ -166,7 +268,7 @@
 .auth-email-form {
     display: flex;
     flex-direction: column;
-    gap: 0.9rem;
+    gap: 0.6rem;
 }
 
 .auth-field {
@@ -184,10 +286,10 @@
 }
 
 .auth-field input {
-    padding: 0.8rem 1rem;
+    padding: 0.65rem 0.9rem;
     border: 2px solid #e0e0e0;
-    border-radius: 12px;
-    font-size: 0.95rem;
+    border-radius: 10px;
+    font-size: 0.9rem;
     font-family: 'Outfit', sans-serif;
     color: #000;
     background: #fafafa;
@@ -199,7 +301,7 @@
 
 .auth-field input:focus {
     border-color: #6F3ECD;
-    box-shadow: 0 0 0 4px rgba(111, 62, 205, 0.12);
+    box-shadow: 0 0 0 3px rgba(111, 62, 205, 0.1);
     background: #fff;
 }
 
@@ -217,19 +319,19 @@
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    padding: 0.9rem;
+    padding: 0.8rem;
     background: #000;
     color: #fff;
     font-family: 'Montserrat', sans-serif;
     font-weight: 900;
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     text-transform: uppercase;
     letter-spacing: 0.08em;
     border: none;
-    border-radius: 12px;
+    border-radius: 10px;
     cursor: pointer;
     transition: background 0.2s, transform 0.15s;
-    margin-top: 0.3rem;
+    margin-top: 0.2rem;
 }
 
 .btn-auth-submit:hover { background: #222; transform: scale(1.02); }
@@ -254,9 +356,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
-    margin-top: 1.2rem;
-    font-size: 0.85rem;
+    gap: 0.4rem;
+    margin-top: 0.9rem;
+    font-size: 0.82rem;
     color: #777;
 }
 
@@ -275,11 +377,11 @@
 .auth-link-btn:hover { color: #5a30a8; }
 
 .auth-legal {
-    margin-top: 1rem;
-    font-size: 0.73rem;
+    margin-top: 0.7rem;
+    font-size: 0.68rem;
     color: #bbb;
     text-align: center;
-    line-height: 1.5;
+    line-height: 1.4;
 }
 
 .auth-legal a { color: #999; }

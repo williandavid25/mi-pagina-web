@@ -14,6 +14,11 @@
     opacity: 1; visibility: visible;
 }
 
+/* Hide floating WhatsApp when cart is open (user requested) */
+body.cart-open .whatsapp-float {
+    display: none !important;
+}
+
 .mini-cart {
     position: absolute;
     top: 0; right: 0;
@@ -64,21 +69,24 @@
 }
 
 .empty-title {
-    font-size: 1.8rem;
+    font-size: 2.2rem;
     font-weight: 900;
     text-transform: uppercase;
     color: #000;
-    margin-bottom: var(--space-xs);
-    letter-spacing: -0.02em;
+    margin-bottom: var(--space-md);
+    letter-spacing: -0.01em;
+    line-height: 1.1;
 }
 
-.empty-subtitle {
+.cart-login-text-simple {
     font-size: 0.95rem;
-    color: #444;
-    margin-bottom: var(--space-xl);
-    max-width: 80%;
-    line-height: 1.4;
+    color: #000;
     font-weight: 500;
+}
+
+.cart-login-link:hover {
+    text-decoration: none !important;
+    opacity: 0.8;
 }
 
 .btn-keep-shopping {
@@ -86,7 +94,7 @@
     color: white;
     font-weight: 700;
     font-size: 0.9rem;
-    padding: 15px 30px;
+    padding: 18px 40px;
     border: none;
     text-transform: uppercase;
     cursor: pointer;
@@ -103,17 +111,17 @@
     color: white;
     font-weight: 800;
     font-size: 1.1rem;
-    width: 90%;
-    padding: 18px;
+    width: 95%;
+    padding: 22px;
     border: none;
-    border-radius: 20px; /* Slight rounding based on image */
+    border-radius: 50px; /* Fully rounded based on image */
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 10px;
     cursor: pointer;
     position: relative;
-    box-shadow: 0 4px 15px rgba(255, 0, 0, 0.4);
+    box-shadow: 0 10px 25px rgba(255, 0, 0, 0.4);
 }
 
 /* Continuous shake/vibrate animation requested by user */
@@ -187,9 +195,16 @@
 
 .btn-remove-item {
     position: absolute;
-    top: 10px; right: 10px;
-    background: transparent; border: none; border-bottom: 1px solid #999;
-    font-size: 0.75rem; color: #666; cursor: pointer;
+    top: 15px; right: 15px;
+    background: transparent; border: none; border-bottom: 1px solid #aaa;
+    font-size: 0.8rem; color: #888; cursor: pointer;
+    font-weight: 500;
+    transition: color 0.2s, border-color 0.2s;
+}
+
+.btn-remove-item:hover {
+    color: #902126;
+    border-color: #902126;
 }
 
 .cart-footer {
@@ -201,13 +216,26 @@
 
 .cart-summary-row {
     display: flex; justify-content: space-between;
-    font-size: 1.1rem; font-weight: 800; text-transform: uppercase;
-    margin-bottom: var(--space-md);
+    font-size: 1.25rem; font-weight: 900; text-transform: uppercase;
+    margin-bottom: var(--space-lg);
+    color: #000;
+}
+
+.btn-checkout-wa {
+    background-color: #2EDC61 !important; /* Brighter green from screenshot */
+    border-radius: 12px !important;
+    font-size: 1.1rem !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 15px rgba(46, 220, 97, 0.3);
+}
+
+.btn-checkout-wa svg {
+    filter: drop-shadow(0 1px 1px rgba(0,0,0,0.1));
 }
 
 .pag-btn {
     width: 100%;
-    padding: 18px;
+    padding: 20px;
     font-size: 1.1rem;
     text-align: center;
 }

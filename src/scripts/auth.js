@@ -12,7 +12,7 @@
  * 5. Replace GOOGLE_CLIENT_ID below with your real client ID
  */
 
-export const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com';
+export const GOOGLE_CLIENT_ID = '440096429908-li0naluh0idbvqo3rn8hhbma55nm0i75.apps.googleusercontent.com';
 
 // ── Auth State ──────────────────────────────────────────────────
 let currentUser = null;
@@ -58,6 +58,26 @@ export function signOut() {
     onAuthChange(null);
 }
 
+/** Professional Email Login / Signup Simulation */
+export function simulateEmailAuth(email, password, isRegister = false, customName = null) {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            const baseName = customName || email.split('@')[0];
+            const displayName = baseName.charAt(0).toUpperCase() + baseName.slice(1);
+            const newUser = {
+                name:    displayName,
+                email:   email,
+                picture: `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=902126&color=fff&bold=true&size=128`,
+                sub:     (isRegister ? 'reg_' : 'local_') + Date.now(),
+            };
+            currentUser = newUser;
+            localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(currentUser));
+            onAuthChange(currentUser);
+            resolve(currentUser);
+        }, 1200);
+    });
+}
+
 // ── UI Update Callback ───────────────────────────────────────────
 function onAuthChange(user) {
     // Update cart auth state
@@ -73,22 +93,40 @@ function onAuthChange(user) {
 
 // ── Cart Auth Section ────────────────────────────────────────────
 export function updateCartAuthUI(user) {
+    // ── Empty state banners
     const loginBanner = document.getElementById('cart-login-banner');
     const userBanner  = document.getElementById('cart-user-banner');
-    if (!loginBanner || !userBanner) return;
+    // ── Filled state banners
+    const loginBannerFilled = document.getElementById('cart-login-banner-filled');
+    const userBannerFilled  = document.getElementById('cart-user-banner-filled');
 
-    if (user) {
-        loginBanner.style.display = 'none';
-        userBanner.style.display  = 'flex';
-        const img = userBanner.querySelector('.cart-user-avatar');
-        const name = userBanner.querySelector('.cart-user-name');
-        const email = userBanner.querySelector('.cart-user-email');
-        if (img)   img.src    = user.picture || '';
-        if (name)  name.textContent  = user.name;
-        if (email) email.textContent = user.email;
-    } else {
-        loginBanner.style.display = 'flex';
-        userBanner.style.display  = 'none';
+    const userProfileHtml = user ? `
+        <img src="${user.picture || ''}" alt="Avatar" style="width: 38px; height: 38px; border-radius: 50%; border: 2.5px solid #902126; object-fit: cover; flex-shrink: 0;">
+        <div style="flex-grow: 1; min-width: 0;">
+            <span style="font-weight: 800; font-size: 0.85rem; color: #000; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${user.name}</span>
+            <span style="font-size: 0.72rem; color: #666; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${user.email}</span>
+        </div>
+        <button id="cart-signout-btn" style="flex-shrink: 0; background: #f0f0f0; border: none; padding: 5px 10px; border-radius: 8px; font-weight: 700; font-size: 0.68rem; cursor: pointer; color: #444; text-transform: uppercase;">Salir</button>
+    ` : '';
+
+    // Update empty-state banners
+    if (loginBanner) loginBanner.style.display = user ? 'none' : '';
+    if (userBanner) {
+        userBanner.style.display = user ? 'flex' : 'none';
+        if (user) {
+            userBanner.style.cssText = 'display: flex; align-items: center; gap: 10px; flex-wrap: nowrap; margin-bottom: 1.5rem;';
+            userBanner.innerHTML = userProfileHtml;
+        }
+    }
+
+    // Update filled-state banners (may not exist yet)
+    if (loginBannerFilled) loginBannerFilled.style.display = user ? 'none' : 'flex';
+    if (userBannerFilled) {
+        userBannerFilled.style.display = user ? 'flex' : 'none';
+        if (user) {
+            userBannerFilled.style.cssText = 'display: flex; align-items: center; gap: 10px; background: #fafafa; border: 1.5px solid #ececec; border-radius: 10px; padding: 10px 14px;';
+            userBannerFilled.innerHTML = userProfileHtml;
+        }
     }
 }
 
@@ -115,8 +153,11 @@ export function initGoogleAuth() {
     loadUser();
 
     if (!window.google?.accounts?.id) {
-        console.warn('Google Identity Services not loaded yet. Auth is UI-only.');
-        onAuthChange(currentUser); // still update UI from localStorage
+        console.warn('Google Identity Services not loaded. Showing fallback button.');
+        // Show fallback Google button
+        const fallback = document.getElementById('auth-google-fallback');
+        if (fallback) fallback.style.display = 'flex';
+        onAuthChange(currentUser);
         return;
     }
 
@@ -136,7 +177,7 @@ export function initGoogleAuth() {
         google.accounts.id.renderButton(googleBtnContainer, {
             theme: 'filled_black',
             size:  'large',
-            width: '100%',
+            width: googleBtnContainer.offsetWidth || 340,
             text:  'continue_with',
             logo_alignment: 'left',
         });
@@ -156,11 +197,15 @@ export function openAuthModal() {
             google.accounts.id.renderButton(googleBtnContainer, {
                 theme: 'filled_black',
                 size:  'large',
-                width: '100%',
+                width: googleBtnContainer.offsetWidth || 340,
                 text:  'continue_with',
                 logo_alignment: 'left',
             });
         }
+    } else if (!window.google?.accounts?.id) {
+        // Show fallback if GIS never loaded
+        const fallback = document.getElementById('auth-google-fallback');
+        if (fallback) fallback.style.display = 'flex';
     }
 }
 
