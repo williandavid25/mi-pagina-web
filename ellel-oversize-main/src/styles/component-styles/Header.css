@@ -336,12 +336,12 @@ body.home-page .header:not(.scrolled) .logo-underline {
 }
 
 .user-dropdown-item.logout {
-    color: #ef4444;
+    color: #dc2626; /* More vibrant red */
 }
 
 .user-dropdown-item.logout:hover {
-    background: rgba(239, 68, 68, 0.08);
-    color: #ef4444;
+    background: rgba(220, 38, 38, 0.08);
+    color: #dc2626;
 }
 
 .icon-svg {

@@ -163,16 +163,21 @@ export function updateHeaderAuthUI(user) {
                     <span class="user-info-role">${user.rol === 'admin' ? 'Administrador' : 'Cliente'}</span>
                 </div>
                 <a href="perfil.html" class="user-dropdown-item">
-                    <i class="fas fa-user-edit"></i> Editar Información
+                    <i class="fas fa-user-edit"></i> EDITAR INFORMACIÓN
                 </a>
                 ${isAdmin ? `
                 <a href="admin.html" class="user-dropdown-item">
-                    <i class="fas fa-shield-alt"></i> Panel de Admin
+                    <i class="fas fa-user-shield"></i> PANEL DE ADMIN
                 </a>
                 ` : ''}
-                <button id="header-logout-btn" class="user-dropdown-item logout">
-                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
-                </button>
+                <a href="nosotros.html" class="user-dropdown-item">
+                    <i class="fas fa-info-circle"></i> SOBRE NOSOTROS
+                </a>
+                <div style="margin-top: 5px; padding-top: 5px; border-top: 1px solid rgba(0,0,0,0.05);">
+                    <button id="header-logout-btn" class="user-dropdown-item logout">
+                        <i class="fas fa-sign-out-alt"></i> CERRAR SESIÓN
+                    </button>
+                </div>
             `;
 
             // Explicitly set log out listener
@@ -180,10 +185,8 @@ export function updateHeaderAuthUI(user) {
             if (logoutBtn) {
                 logoutBtn.onclick = (e) => {
                     e.preventDefault();
-                    if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
-                        signOut();
-                        headerDropdown.classList.remove('active');
-                    }
+                    signOut();
+                    headerDropdown.classList.remove('active');
                 };
             }
         }
