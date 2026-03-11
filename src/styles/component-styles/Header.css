@@ -25,7 +25,8 @@
 
 /* Reducción suave del logo al hacer scroll, manteniendo legibilidad */
 .header.scrolled .logo-link img {
-    height: 75px; /* Proportional reduction */
+    height: 90px; /* Proportional reduction */
+    transform: translateZ(20px);
 }
 
 .header.scrolled .logo-text {
@@ -48,13 +49,16 @@
     align-items: center;
     gap: 15px; /* Espacio entre icono y texto */
     text-decoration: none;
+    perspective: 1000px; /* Enable 3D effects */
 }
 
 .logo-link img {
-    height: 110px; /* Reduced from 140px to prevent encroaching on content below */
+    height: 130px; /* Increased from 110px */
     object-fit: contain;
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
     animation: logoFloat 4s ease-in-out infinite;
+    transform-style: preserve-3d;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.1));
 }
 
 /* Mobile: significantly larger layout but optimized for small screens */
@@ -474,3 +478,47 @@ body.home-page .header:not(.scrolled) .logo-underline {
 .social-btn svg { width: 100%; height: 100%; transition: fill 0.3s, stroke 0.3s; }
 .social-btn:hover { color: var(--color-accent-white, #fff); transform: translateY(-4px) scale(1.1); }
 .footer-bottom { text-align: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: var(--space-md); color: #666; font-size: 0.85rem; }
+/* Premium Mobile Close Button */
+.menu-close-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(111, 62, 205, 0.1);
+    border: none;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.menu-close-btn span {
+    position: absolute;
+    width: 20px;
+    height: 2px;
+    background: var(--color-accent-purple);
+    border-radius: 2px;
+    transition: all 0.4s ease;
+}
+
+.menu-close-btn span:first-child {
+    transform: rotate(45deg);
+}
+
+.menu-close-btn span:last-child {
+    transform: rotate(-45deg);
+}
+
+.menu-close-btn:hover {
+    background: var(--color-accent-purple);
+    transform: rotate(90deg) scale(1.1);
+}
+
+.menu-close-btn:hover span {
+    background: white;
+}
+
+.menu-close-btn:active {
+    transform: rotate(90deg) scale(0.95);
+}

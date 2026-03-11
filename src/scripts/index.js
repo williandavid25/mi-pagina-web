@@ -345,29 +345,50 @@ function setupUIInteractions() {
 }
 
 /**
- * Permite girar el logo manualmente interactuando con el mouse
+ * Permite girar el logo manualmente y añade efecto 3D tilt
  */
 function setupLogoRotation() {
-    const logoImg = document.querySelector('.logo-link img');
+    const logoLink = document.querySelector('.logo-link');
+    const logoImg = logoLink?.querySelector('img');
     if (!logoImg) return;
 
     let isDragging = false;
     let startX = 0;
     let currentRotation = 0;
 
-    // Efecto de imán / seguimiento ligero al mover el mouse
-    logoImg.addEventListener('mousemove', (e) => {
+    // Efecto 3D Tilt al mover el mouse
+    logoLink.addEventListener('mousemove', (e) => {
         if (isDragging) return;
-        const rect = logoImg.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const deltaX = e.clientX - centerX;
-        const rotation = deltaX * 0.2; // Sensibilidad ligera
-        gsap.to(logoImg, { rotation: rotation, duration: 0.5, ease: 'power2.out' });
+        
+        const rect = logoLink.getBoundingClientRect();
+        const x = e.clientX - rect.left; // x position within the element
+        const y = e.clientY - rect.top;  // y position within the element
+        
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        
+        const rotateX = (y - centerY) / 8; // Sensibilidad vertical
+        const rotateY = (centerX - x) / 5; // Sensibilidad horizontal
+        
+        gsap.to(logoImg, { 
+            rotateX: rotateY, // Toco invertido para efecto natural
+            rotateY: -rotateX, 
+            scale: 1.1,
+            duration: 0.5, 
+            ease: 'power2.out',
+            transformPerspective: 1000
+        });
     });
 
-    logoImg.addEventListener('mouseleave', () => {
+    logoLink.addEventListener('mouseleave', () => {
         if (isDragging) return;
-        gsap.to(logoImg, { rotation: 0, duration: 0.8, ease: 'back.out(1.7)' });
+        gsap.to(logoImg, { 
+            rotateX: 0, 
+            rotateY: 0, 
+            scale: 1,
+            duration: 0.8, 
+            ease: 'back.out(1.7)' 
+        });
     });
 
     // Giro manual de 360 grados al hacer clic o arrastrar
@@ -380,7 +401,7 @@ function setupLogoRotation() {
     window.addEventListener('mousemove', (e) => {
         if (!isDragging) return;
         const deltaX = e.clientX - startX;
-        const rotationJump = deltaX * 1.5; // Rapidez del giro
+        const rotationJump = deltaX * 1.5; 
         gsap.set(logoImg, { rotation: currentRotation + rotationJump });
     });
 
@@ -392,16 +413,11 @@ function setupLogoRotation() {
         const deltaX = e.clientX - startX;
         currentRotation += deltaX * 1.5;
         
-        // Animación de inercia si el giro fue rápido
         if (Math.abs(deltaX) > 20) {
             gsap.to(logoImg, { 
                 rotation: currentRotation + (deltaX * 2), 
                 duration: 1.5, 
-                ease: 'power2.out',
-                onComplete: () => {
-                    // Opcional: Volver a 0 o quedarse ahí
-                    // gsap.to(logoImg, { rotation: 0, delay: 2, duration: 1 });
-                }
+                ease: 'power2.out'
             });
         }
     });
@@ -410,13 +426,13 @@ function setupLogoRotation() {
     logoImg.addEventListener('touchstart', (e) => {
         startX = e.touches[0].clientX;
         isDragging = true;
-    });
+    }, {passive: true});
 
     window.addEventListener('touchmove', (e) => {
         if (!isDragging) return;
         const deltaX = e.touches[0].clientX - startX;
         gsap.set(logoImg, { rotation: currentRotation + (deltaX * 1.5) });
-    });
+    }, {passive: true});
 
     window.addEventListener('touchend', (e) => {
         if (!isDragging) return;
