@@ -2,7 +2,7 @@ import { initAnimations, animateProductCards } from './animations.js';
 import { ProductGrid } from '../components/product/ProductGrid.js';
 import { MiniCart } from '../components/cart/MiniCart.js';
 import { CheckoutModal } from '../components/forms/CheckoutForm.js';
-import { initCart, addToCart, openCart } from './cartState.js';
+import { initCart, addToCart, openCart, procesarCompraWhatsApp } from './cartState.js';
 import { AuthModal } from '../components/auth/AuthModal.js';
 import { initGoogleAuth, openAuthModal, closeAuthModal, signOut, updateCartAuthUI, updateHeaderAuthUI, getUser } from './auth.js';
 import { initSearch } from './search.js';
@@ -156,7 +156,7 @@ function setupAuthInteractions() {
 }
 
 function setupUIInteractions() {
-    const checkoutBtn = document.getElementById('open-checkout-btn');
+    const checkoutBtn = document.getElementById('btn-checkout-whatsapp');
     const checkoutOverlay = document.getElementById('checkout-overlay');
     const closeCheckoutBtn = document.getElementById('close-checkout-btn');
     const cartOverlay = document.getElementById('cart-overlay');
@@ -165,11 +165,8 @@ function setupUIInteractions() {
     // Close button handles in cartState (closeCart)
 
     // Checkout actions
-    if (checkoutBtn && checkoutOverlay && cartOverlay) {
-        checkoutBtn.addEventListener('click', () => {
-            cartOverlay.classList.remove('active'); 
-            checkoutOverlay.classList.add('active'); 
-        });
+    if (checkoutBtn) {
+        checkoutBtn.addEventListener('click', procesarCompraWhatsApp);
     }
     if (closeCheckoutBtn && checkoutOverlay) {
         closeCheckoutBtn.addEventListener('click', () => checkoutOverlay.classList.remove('active'));

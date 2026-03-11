@@ -6,7 +6,7 @@
 import { ProductCard } from '../components/product/ProductCard.js';
 import { MiniCart } from '../components/cart/MiniCart.js';
 import { CheckoutModal } from '../components/forms/CheckoutForm.js';
-import { initCart, addToCart, openCart } from './cartState.js';
+import { initCart, addToCart, openCart, procesarCompraWhatsApp } from './cartState.js';
 
 // -------------------------------
 // Config maps for display labels
@@ -227,16 +227,13 @@ function setupMenuInteractions() {
     if (menuBtn  && mobileMenu) menuBtn.addEventListener('click',  () => mobileMenu.classList.add('active'));
     if (closeMenuBtn && mobileMenu) closeMenuBtn.addEventListener('click', () => mobileMenu.classList.remove('active'));
 
-    const checkoutBtn       = document.getElementById('open-checkout-btn');
+    const checkoutBtn       = document.getElementById('btn-checkout-whatsapp');
     const checkoutOverlay   = document.getElementById('checkout-overlay');
     const closeCheckoutBtn  = document.getElementById('close-checkout-btn');
     const cartOverlay       = document.getElementById('cart-overlay');
 
-    if (checkoutBtn && checkoutOverlay) {
-        checkoutBtn.addEventListener('click', () => {
-            if (cartOverlay) cartOverlay.classList.remove('active');
-            checkoutOverlay.classList.add('active');
-        });
+    if (checkoutBtn) {
+        checkoutBtn.addEventListener('click', procesarCompraWhatsApp);
     }
     if (closeCheckoutBtn && checkoutOverlay) {
         closeCheckoutBtn.addEventListener('click', () => checkoutOverlay.classList.remove('active'));

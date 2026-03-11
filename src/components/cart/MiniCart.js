@@ -57,12 +57,14 @@ export const MiniCart = () => {
                     <div class="cart-filled-state" id="cart-filled-state" style="display: none;">
                         <div id="cart-items-wrapper"></div>
                         
-                        <div class="cart-footer">
                             <div class="cart-summary-row total">
                                 <span>Subtotal</span>
                                 <span id="cart-subtotal">$0.00</span>
                             </div>
-                            <button class="btn btn-black pag-btn" id="open-checkout-btn">PASAR POR CAJA</button>
+                            <button class="btn btn-checkout-wa pag-btn pulse-anim" id="btn-checkout-whatsapp" style="background-color: #25D366; color: white; border: none; font-weight: bold; font-size: 1rem; padding: 15px; width: 100%; border-radius: var(--radius-sm); margin-top: 15px; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px;">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12.031 0C5.383 0 0 5.385 0 12.033c0 2.128.552 4.195 1.6 6.02L.268 23.01l5.088-1.332a12.01 12.01 0 0 0 6.674 1.996h.004c6.649 0 12.033-5.385 12.033-12.032C24.067 5.385 18.681 0 12.031 0zm0 21.644h-.002c-1.802 0-3.568-.484-5.118-1.4l-.367-.218-3.804.997 1.015-3.708-.239-.38C2.515 15.358 1.966 13.725 1.966 12.033 1.966 6.471 6.475 1.964 12.031 1.964c5.558 0 10.067 4.507 10.067 10.069 0 5.56-4.509 10.067-10.067 10.067zm5.526-7.551c-.302-.152-1.791-.885-2.068-.988-.276-.102-.478-.152-.679.152-.201.303-.781.988-.958 1.19-.175.202-.352.227-.654.076-1.558-.781-2.731-1.442-3.812-3.32-.279-.485.424-.45.986-1.574.1-.202.05-.38-.025-.532-.075-.152-.679-1.638-.93-2.245-.246-.593-.495-.512-.679-.521-.176-.01-.378-.01-.58-.01-.202 0-.528.076-.805.38s-1.057 1.034-1.057 2.522 1.082 2.928 1.233 3.13 2.138 3.262 5.183 4.577c.725.313 1.291.501 1.733.642.728.232 1.391.199 1.916.12.585-.088 1.791-.733 2.043-1.439.252-.708.252-1.314.176-1.439-.076-.127-.277-.203-.579-.355z"/></svg>
+                                COMPRAR POR WHATSAPP
+                            </button>
                         </div>
                     </div>
                 </div>

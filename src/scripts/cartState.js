@@ -173,3 +173,26 @@ function attachItemEvents() {
         });
     });
 }
+
+export function procesarCompraWhatsApp() {
+    if (cartItems.length === 0) {
+        alert("El carrito está vacío.");
+        return;
+    }
+
+    const telefono = "593980862064"; 
+    let mensaje = "Hola Ellel Oversize, deseo realizar el siguiente pedido:\n\n";
+    let total = 0;
+
+    cartItems.forEach(item => {
+        const subtotal = item.qty * item.price;
+        total += subtotal;
+        mensaje += `- ${item.qty}x ${item.name} (${item.size} / ${item.color}) - $${subtotal.toFixed(2)}\n`;
+    });
+
+    mensaje += `\n*Total a pagar: $${total.toFixed(2)}*\n\n`;
+    mensaje += "Quedo atento para coordinar el pago y envío.";
+
+    const urlWhatsApp = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
+    window.open(urlWhatsApp, '_blank');
+}

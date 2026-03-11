@@ -2,7 +2,7 @@
  * Product Detail Page Interactivity
  * Handles size selection, color swapping, quantity calculation and adding to cart.
  */
-import { initCart, addToCart, openCart } from './cartState.js';
+import { initCart, addToCart, openCart, procesarCompraWhatsApp } from './cartState.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
     // Only run if we are on the product detail page
@@ -189,7 +189,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         btnBuyNow.addEventListener('click', () => {
             if (window.gsap) gsap.fromTo(btnBuyNow, { scale: 0.95 }, { scale: 1, duration: 0.2 });
             handleCartAction(btnBuyNow, originalTextBuy);
-            // In a real app, redirect to checkout here: window.location.href = '#checkout';
+            // Redirigir a WhatsApp en vez del viejo checkout falso
+            setTimeout(() => {
+                procesarCompraWhatsApp();
+            }, 350);
         });
     }
 
