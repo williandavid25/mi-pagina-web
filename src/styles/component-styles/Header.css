@@ -264,12 +264,30 @@ body.home-page .header:not(.scrolled) .logo-underline {
     -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>'); 
     mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>'); 
 }
+.heart-icon-header {
+    -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="red" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>');
+    mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="red" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>');
+}
 
 .icon-btn:hover {
     background: var(--color-accent-purple);
     color: white;
     transform: translateY(-2px);
     box-shadow: 0 4px 10px rgba(111,62,205,0.3);
+}
+
+.wishlist-badge {
+    position: absolute;
+    top: -5px; right: -5px;
+    background: #ff4b4b; /* Red for favorites */
+    color: #fff;
+    font-size: 0.75rem; font-weight: 900;
+    min-width: 20px; height: 20px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    z-index: 10;
 }
 
 .cart-badge {
@@ -348,18 +366,7 @@ body.home-page .header:not(.scrolled) .logo-underline {
     margin-bottom: var(--space-md);
 }
 
-.hero-title {
-    font-size: clamp(3rem, 6vw, 5.5rem);
-    line-height: 1;
-    margin-bottom: var(--space-md);
-}
 
-.hero-subtitle {
-    font-size: 1.2rem;
-    color: var(--color-text-body);
-    margin-bottom: var(--space-lg);
-    max-width: 500px;
-}
 
 .hero-cta-group {
     display: flex; gap: var(--space-sm); flex-wrap: wrap;
