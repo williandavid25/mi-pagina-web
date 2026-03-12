@@ -1,11 +1,13 @@
 import { initAnimations, animateProductCards } from './animations.js';
 import { ProductGrid } from '../components/product/ProductGrid.js';
 import { MiniCart } from '../components/cart/MiniCart.js';
+import { WishlistDrawer } from '../components/wishlist/WishlistDrawer.js';
 import { CheckoutModal } from '../components/forms/CheckoutForm.js';
 import { initCart, addToCart, openCart, procesarCompraWhatsApp } from './cartState.js';
 import { AuthModal } from '../components/auth/AuthModal.js';
 import { initGoogleAuth, openAuthModal, closeAuthModal, signOut, simulateEmailAuth, updateCartAuthUI, updateHeaderAuthUI, getUser } from './auth.js';
 import { initSearch } from './search.js';
+import { toggleWishlist, getWishlistCount } from './wishlistState.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('Aplicación iniciada');
@@ -24,11 +26,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     const authContainer = document.getElementById('auth-container');
     if (authContainer) authContainer.innerHTML = AuthModal();
 
+    // Inject Wishlist Drawer
+    const wishlistContainer = document.getElementById('wishlist-container');
+    if (wishlistContainer) wishlistContainer.innerHTML = WishlistDrawer();
+
     // 2. Inicializar Estado del Carrito y Lógica DOM
     initCart();
     setupUIInteractions();
     setupAuthInteractions();
     initSearch(); // Live product search
+    updateWishlistBadge(); // Initial count
+    setupWishlistInteractions();
     
     // 3. Iniciar el Carrusel
     setupCarousel();
@@ -43,6 +51,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         const productos = await response.json();
+        allProducts = productos; // Salvar referencia global
         console.log('Productos cargados exitosamente:', productos.length, 'ítems encontrados.');
         
         const gridContainer = document.getElementById('product-grid-container');
@@ -342,6 +351,166 @@ function setupUIInteractions() {
     
     // Interactive 360 Logo Rotation
     setupLogoRotation();
+}
+
+/**
+ * Global products reference for wishlist rendering
+ */
+let allProducts = [];
+
+/**
+ * Handles wishlist drawer, animations and interactions
+ */
+function setupWishlistInteractions() {
+    const wishlistBtn = document.getElementById('header-wishlist-btn');
+    const closeWishlistBtn = document.getElementById('close-wishlist-btn');
+    const wishlistOverlay = document.getElementById('wishlist-overlay');
+    const exploreBtn = document.getElementById('wishlist-explore-btn');
+
+    const openWishlist = () => {
+        wishlistOverlay.classList.add('active');
+        document.body.classList.add('wishlist-open');
+        renderWishlistItems();
+    };
+
+    const closeWishlist = () => {
+        wishlistOverlay.classList.remove('active');
+        document.body.classList.remove('wishlist-open');
+    };
+
+    if (wishlistBtn) wishlistBtn.addEventListener('click', openWishlist);
+    if (closeWishlistBtn) closeWishlistBtn.addEventListener('click', closeWishlist);
+    if (wishlistOverlay) {
+        wishlistOverlay.addEventListener('click', (e) => {
+            if (e.target === wishlistOverlay) closeWishlist();
+        });
+    }
+    if (exploreBtn) {
+        exploreBtn.addEventListener('click', () => {
+            closeWishlist();
+            document.getElementById('catalogo').scrollIntoView({ behavior: 'smooth' });
+        });
+    }
+
+    // Listen for custom state changes
+    window.addEventListener('wishlistUpdated', (e) => {
+        updateWishlistBadge(e.detail.count);
+        if (wishlistOverlay.classList.contains('active')) {
+            renderWishlistItems();
+        }
+    });
+
+    // Delegate heart clicks on product cards
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('.wishlist-btn');
+        if (!btn) return;
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        const productId = btn.dataset.id;
+        const isNowLiked = toggleWishlist(productId);
+
+        // Animation logic
+        btn.classList.add('spinning');
+        
+        // Wait for animation half-point to change visual state
+        setTimeout(() => {
+            if (isNowLiked) {
+                btn.classList.add('liked');
+            } else {
+                btn.classList.remove('liked');
+            }
+        }, 300);
+
+        // Remove animation class when done
+        setTimeout(() => {
+            btn.classList.remove('spinning');
+        }, 650);
+    });
+
+    // Delegate actions inside the Wishlist Drawer
+    document.addEventListener('click', (e) => {
+        const removeBtn = e.target.closest('.btn-remove-wish');
+        const addToCartBtn = e.target.closest('.btn-wish-to-cart');
+
+        if (removeBtn) {
+            const id = removeBtn.dataset.id;
+            toggleWishlist(id); // Untoggle
+            
+            // Also update the card heart in the background if visible
+            const cardHeart = document.querySelector(`.product-card[id="${id}"] .wishlist-btn`);
+            if (cardHeart) cardHeart.classList.remove('liked');
+        }
+
+        if (addToCartBtn) {
+            const id = addToCartBtn.dataset.id;
+            const product = allProducts.find(p => String(p.id) === String(id));
+            if (product) {
+                addToCart({
+                    id: product.id,
+                    name: product.nombre,
+                    price: product.precio,
+                    qty: 1,
+                    img: product.imagenes[0],
+                    size: "L",
+                    color: "Estándar"
+                });
+                
+                // Switch drawers for a better UX
+                closeWishlist();
+                setTimeout(() => openCart(), 300);
+            }
+        }
+    });
+}
+
+function renderWishlistItems() {
+    const fromStorage = JSON.parse(localStorage.getItem('ellel_wishlist') || '[]');
+    const container = document.getElementById('wishlist-items-container');
+    const emptyState = document.getElementById('wishlist-empty-state');
+    
+    if (!container || !emptyState) return;
+
+    if (fromStorage.length === 0) {
+        container.style.display = 'none';
+        emptyState.style.display = 'flex';
+        return;
+    }
+
+    container.style.display = 'flex';
+    emptyState.style.display = 'none';
+
+    // Filter products that are in the wishlist
+    const favoriteProducts = allProducts.filter(p => fromStorage.includes(String(p.id)));
+
+    container.innerHTML = favoriteProducts.map(p => `
+        <div class="wishlist-item" data-id="${p.id}">
+            <img src="${p.imagenes[0]}" alt="${p.nombre}" class="wish-item-img">
+            <div class="wish-item-info">
+                <h3 class="wish-item-title">${p.nombre}</h3>
+                <span class="wish-item-price">$${p.precio.toFixed(2)}</span>
+                <button class="btn-wish-to-cart" data-id="${p.id}">+ AÑADIR AL CARRITO</button>
+            </div>
+            <button class="btn-remove-wish" data-id="${p.id}" aria-label="Eliminar">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="3" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+    `).join('');
+}
+
+function updateWishlistBadge(count) {
+    const badge = document.querySelector('.wishlist-badge');
+    if (!badge) return;
+    
+    const finalCount = count !== undefined ? count : getWishlistCount();
+    badge.textContent = finalCount;
+    
+    // Subtle pop effect if count > 0
+    if (finalCount > 0) {
+        badge.style.transform = 'scale(1.2)';
+        setTimeout(() => badge.style.transform = 'scale(1)', 200);
+    }
 }
 
 /**

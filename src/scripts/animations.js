@@ -7,8 +7,8 @@ export const initAnimations = () => {
     // Hero & static elements — run immediately on page load
     const heroEls = [
         { sel: '.hero-badge',        y: -20 },
-        { sel: '.hero-title',        y: 40 },
-        { sel: '.hero-subtitle',     y: 30 },
+        { sel: '.video-hero__title',   y: 40 },
+        { sel: '.video-hero__subtitle', y: 30 },
         { sel: '.hero-cta-group',    y: 20 },
         { sel: '.floating-hero-img', y: 0, scale: true },
         { sel: '.whatsapp-float',    y: 0, scale: true, rotate: true },
