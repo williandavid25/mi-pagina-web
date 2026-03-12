@@ -476,25 +476,25 @@ function setupCarousel() {
     if (!document.querySelector('.mySwiper')) return;
 
     const swiper = new Swiper(".mySwiper", {
-        // 1. Efecto Coverflow (3D Central)
+        // 1. Efecto Coverflow (Apple 3D Style)
         effect: "coverflow",
+        coverflowEffect: {
+            rotate: 10,     /* Ligera inclinación 3D profesional */
+            stretch: 0,     /* Espaciado natural */
+            depth: 250,     /* Profundidad en el eje Z */
+            modifier: 1,    /* Escala de intensidad */
+            slideShadows: false, /* Sin sombras negras agresivas */
+        },
+        
         grabCursor: true, 
         centeredSlides: true, 
         slidesPerView: "auto", 
         loop: true, 
-        
-        // 2. Parámetros del Efecto Coverflow
-        coverflowEffect: {
-            rotate: 0,      /* Look moderno sin rotación */
-            stretch: -30,   /* Acerca las fotos laterales eliminando huecos */
-            depth: 150,     /* Qué tan "lejos" se ven las laterales */
-            modifier: 1,
-            slideShadows: false, 
-        },
+        speed: 800, 
         
         // 3. Reproducción Automática
         autoplay: {
-            delay: 3500, 
+            delay: 4000, 
             disableOnInteraction: false, 
         },
         
@@ -508,19 +508,10 @@ function setupCarousel() {
         pagination: {
             el: ".swiper-pagination",
             clickable: true, 
-            dynamicBullets: true, 
+            dynamicBullets: false, 
         },
-        
-        // 6. Responsive Breakpoints
-        breakpoints: {
-            // Celulares
-            320: {
-                centeredSlides: true,
-            },
-            // Tablets y Desktop
-            768: {
-                centeredSlides: true,
-            }
-        }
+
+        // Optimización de rendimiento
+        watchSlidesProgress: true,
     });
 }

@@ -29,6 +29,9 @@
     <!-- Swiper CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="stylesheet" href="./src/styles/component-styles/Search.css">
+
+    <!-- Preload critical video -->
+    <link rel="preload" href="./src/assets/videos/hero-bg.mp4" as="video" type="video/mp4">
 </head>
 
 <body class="home-page">
@@ -90,7 +93,7 @@
             <!-- ═══ HERO VIDEO BACKGROUND ═══ -->
             <section class="video-hero" id="inicio">
                 <!-- Fullscreen looping video (Optimized) -->
-                <video autoplay muted loop playsinline preload="auto" class="video-hero__bg" poster="./src/assets/img/banners/banner-hoodie-negro.jpg">
+                <video autoplay muted loop playsinline preload="auto" fetchpriority="high" class="video-hero__bg">
                     <source src="./src/assets/videos/hero-bg.mp4" type="video/mp4">
                     Tu navegador no soporta videos integrados.
                 </video>
@@ -100,14 +103,14 @@
 
                 <!-- Content on top of video -->
                 <div class="video-hero__content container">
-                    <h1 class="video-hero__title">
+                    <h1 class="hero-title">
                         <span class="typewriter-line" id="typewriter-line1"></span><br>
                         TU <span class="text-gold typewriter-line" id="typewriter-line2"></span><span
                             class="typewriter-cursor" id="typewriter-cursor">|</span>
                     </h1>
-                    <p class="video-hero__subtitle">La comodidad extrema se encuentra con el diseño urbano.<br>Descubre
+                    <p class="hero-subtitle">La comodidad extrema se encuentra con el diseño urbano.<br>Descubre
                         los nuevos modelos oversize que marcarán la tendencia.</p>
-                    <div class="video-hero__cta">
+                    <div class="hero-cta-group">
                         <a href="catalogo.html" class="btn btn-white pulse-anim shadow-hover"
                             style="display: inline-block;">EXPLORAR CATÁLOGO</a>
                     </div>
@@ -140,28 +143,77 @@
                 <div class="swiper mySwiper">
                     <div class="swiper-wrapper">
                         <div class="swiper-slide">
-                            <img src="./src/assets/img/banners/banner-hoodie-azulelectrico.jpg" alt="Banner Azul Eléctrico">
+                            <div class="card-media">
+                                <span class="vertical-text">HOODIE</span>
+                                <img src="./src/assets/img/banners/banner-hoodie-azulelectrico.jpg" alt="Azul Eléctrico">
+                            </div>
+                            <div class="card-info">
+                                <h3>Blue Electric Edition</h3>
+                                <p>Colección 2026 • Premium Oversize</p>
+                            </div>
                         </div>
                         <div class="swiper-slide">
-                            <img src="./src/assets/img/banners/banner-hoodie-marfil.jpg" alt="Banner Marfil">
+                            <div class="card-media">
+                                <span class="vertical-text">HOODIE</span>
+                                <img src="./src/assets/img/banners/banner-hoodie-marfil.jpg" alt="Marfil">
+                            </div>
+                            <div class="card-info">
+                                <h3>Essential Ivory</h3>
+                                <p>Colección 2026 • Heavy Weight</p>
+                            </div>
                         </div>
                         <div class="swiper-slide">
-                            <img src="./src/assets/img/banners/banner-hoodie-negro.jpg" alt="Banner Negro">
+                            <div class="card-media">
+                                <span class="vertical-text">HOODIE</span>
+                                <img src="./src/assets/img/banners/banner-hoodie-negro.jpg" alt="Negro">
+                            </div>
+                            <div class="card-info">
+                                <h3>Onyx Black Drop</h3>
+                                <p>Colección 2026 • Limited Edition</p>
+                            </div>
                         </div>
                         <div class="swiper-slide">
-                            <img src="./src/assets/img/banners/1773289479333.png" alt="Colección Elleel 1">
+                            <div class="card-media">
+                                <span class="vertical-text">HOODIE</span>
+                                <img src="./src/assets/img/banners/1773289479333.png" alt="Colección 1">
+                            </div>
+                            <div class="card-info">
+                                <h3>Urban Techwear</h3>
+                                <p>Colección 2026 • Street Style</p>
+                            </div>
                         </div>
                         <div class="swiper-slide">
-                            <img src="./src/assets/img/banners/1773289601640.png" alt="Colección Elleel 2">
+                            <div class="card-media">
+                                <span class="vertical-text">HOODIE</span>
+                                <img src="./src/assets/img/banners/1773289601640.png" alt="Colección 2">
+                            </div>
+                            <div class="card-info">
+                                <h3>Neutral Balance</h3>
+                                <p>Colección 2026 • Basic Fit</p>
+                            </div>
                         </div>
                         <div class="swiper-slide">
-                            <img src="./src/assets/img/banners/1773290080697.png" alt="Colección Elleel 3">
+                            <div class="card-media">
+                                <span class="vertical-text">HOODIE</span>
+                                <img src="./src/assets/img/banners/1773290080697.png" alt="Colección 3">
+                            </div>
+                            <div class="card-info">
+                                <h3>Modern Graphite</h3>
+                                <p>Colección 2026 • Tech Fabric</p>
+                            </div>
                         </div>
                         <div class="swiper-slide">
-                            <img src="./src/assets/img/banners/1773290529084.png" alt="Colección Elleel 4">
+                            <div class="card-media">
+                                <span class="vertical-text">HOODIE</span>
+                                <img src="./src/assets/img/banners/1773290529084.png" alt="Colección 4">
+                            </div>
+                            <div class="card-info">
+                                <h3>Pure Slate</h3>
+                                <p>Colección 2026 • Minimalist Line</p>
+                            </div>
                         </div>
                     </div>
-                    
+
                     <div class="swiper-button-next"></div>
                     <div class="swiper-button-prev"></div>
                     <div class="swiper-pagination"></div>
@@ -173,7 +225,8 @@
             <div class="video-presentation-wrapper mt-xxl mb-xl">
                 <div class="video-container container"
                     style="position: relative; border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-md); max-width: 1000px; margin: 0 auto;">
-                    <video id="brand-video" width="100%" height="auto" autoplay loop muted playsinline preload="auto" poster="./src/assets/img/banners/1773290529084.png">
+                    <video id="brand-video" width="100%" height="auto" autoplay loop muted playsinline preload="auto"
+                        poster="./src/assets/img/banners/1773290529084.png">
                         <source src="./src/assets/videos/Ellel_Video_Generado.mp4" type="video/mp4">
                         Tu navegador no soporta reproducción de video.
                     </video>
