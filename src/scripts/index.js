@@ -473,45 +473,54 @@ function setupQuickAddParams() {
 }
 
 function setupCarousel() {
-    const slides = document.querySelectorAll('.carousel-slide');
-    const dots = document.querySelectorAll('.dot');
-    const prevBtn = document.querySelector('.prev-nav');
-    const nextBtn = document.querySelector('.next-nav');
-    
-    if (slides.length === 0) return;
-    
-    let currentSlide = 0;
-    
-    function goToSlide(n) {
-        slides[currentSlide].classList.remove('active');
-        dots[currentSlide].classList.remove('active');
-        slides[currentSlide].style.transform = `translateX(${-100 * n}%)`; // Ensure proper direction hidden
-        slides[currentSlide].style.opacity = '0';
+    if (!document.querySelector('.mySwiper')) return;
+
+    const swiper = new Swiper(".mySwiper", {
+        // 1. Efecto Coverflow (3D Central)
+        effect: "coverflow",
+        grabCursor: true, 
+        centeredSlides: true, 
+        slidesPerView: "auto", 
+        loop: true, 
         
-        currentSlide = (n + slides.length) % slides.length;
+        // 2. Parámetros del Efecto Coverflow
+        coverflowEffect: {
+            rotate: 0,      /* Look moderno sin rotación */
+            stretch: -30,   /* Acerca las fotos laterales eliminando huecos */
+            depth: 150,     /* Qué tan "lejos" se ven las laterales */
+            modifier: 1,
+            slideShadows: false, 
+        },
         
-        slides[currentSlide].classList.add('active');
-        dots[currentSlide].classList.add('active');
+        // 3. Reproducción Automática
+        autoplay: {
+            delay: 3500, 
+            disableOnInteraction: false, 
+        },
         
-        // Arrange items physically
-        slides.forEach((slide, index) => {
-             slide.style.transform = `translateX(${-100 * currentSlide}%)`;
-             slide.style.opacity = index === currentSlide ? '1' : '0';
-        });
-    }
-    
-    // Initialize 
-    goToSlide(0);
-    
-    if (prevBtn && nextBtn) {
-        prevBtn.addEventListener('click', () => goToSlide(currentSlide - 1));
-        nextBtn.addEventListener('click', () => goToSlide(currentSlide + 1));
-    }
-    
-    dots.forEach((dot, index) => {
-        dot.addEventListener('click', () => goToSlide(index));
+        // 4. Controles de Navegación
+        navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+        },
+        
+        // 5. Controles de Paginación
+        pagination: {
+            el: ".swiper-pagination",
+            clickable: true, 
+            dynamicBullets: true, 
+        },
+        
+        // 6. Responsive Breakpoints
+        breakpoints: {
+            // Celulares
+            320: {
+                slidesPerView: 1.2, 
+            },
+            // Tablets y Desktop
+            768: {
+                slidesPerView: "auto", 
+            }
+        }
     });
-    
-    // Auto advance
-    setInterval(() => goToSlide(currentSlide + 1), 5000);
 }
