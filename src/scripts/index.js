@@ -515,11 +515,11 @@ function setupCarousel() {
         breakpoints: {
             // Celulares
             320: {
-                slidesPerView: 1.2, 
+                centeredSlides: true,
             },
             // Tablets y Desktop
             768: {
-                slidesPerView: "auto", 
+                centeredSlides: true,
             }
         }
     });
