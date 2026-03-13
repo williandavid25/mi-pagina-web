@@ -50,8 +50,8 @@ function renderResults(results, query) {
     const body = document.getElementById('search-body');
     if (!body) return;
 
-    if (!query || query.trim().length < 2) {
-        body.innerHTML = '<p class="search-hint">Escribe para buscar productos...</p>';
+    if (!query) {
+        body.innerHTML = '';
         return;
     }
 
@@ -125,9 +125,7 @@ export function initSearch() {
                         >
                         <button class="search-close-btn" id="search-close-btn" aria-label="Cerrar búsqueda">✕</button>
                     </div>
-                    <div class="search-body" id="search-body">
-                        <p class="search-hint">Escribe para buscar productos...</p>
-                    </div>
+                    <div class="search-body" id="search-body"></div>
                 </div>
             </div>`;
         document.body.appendChild(div.firstElementChild);

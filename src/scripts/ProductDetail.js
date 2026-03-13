@@ -5,10 +5,14 @@
 import { initCart, addToCart, openCart, procesarCompraWhatsApp } from './cartState.js';
 import { WishlistDrawer } from '../components/wishlist/WishlistDrawer.js';
 import { initWishlist, toggleWishlist, openWishlist } from './wishlistState.js';
+import { HistoryManager } from './utils.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
     // Only run if we are on the product detail page
     if (!document.getElementById('pdp-main-img')) return;
+    
+    // Start history manager
+    HistoryManager.init();
     
     // Inject wishlist drawer
     const wishlistContainer = document.getElementById('wishlist-container');

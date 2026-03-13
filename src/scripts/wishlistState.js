@@ -25,24 +25,28 @@ export function initWishlist() {
     
     renderWishlist();
 
-    // Bind drawer events
-    const wishlistOverlay = document.getElementById('wishlist-overlay');
-    const closeBtn = document.getElementById('close-wishlist-btn');
-    const exploreBtn = document.getElementById('btn-explore-wishlist');
-    
-    if (closeBtn && wishlistOverlay) {
-        closeBtn.addEventListener('click', () => closeWishlist());
-    }
-    if (exploreBtn) {
-        exploreBtn.addEventListener('click', () => {
+    renderWishlist();
+
+    // Use event delegation for drawer-specific events (safer if DOM is re-injected)
+    document.addEventListener('click', (e) => {
+        // Close Button
+        if (e.target.closest('#close-wishlist-btn')) {
+            closeWishlist();
+        }
+        
+        // Explore Button (Empty state)
+        if (e.target.closest('#btn-explore-wishlist')) {
             closeWishlist();
             window.location.href = 'catalogo.html';
-        });
-    }
+        }
+    });
 
     // Bind global toggle buttons
     document.querySelectorAll('.wishlist-btn-toggle').forEach(btn => {
-        btn.addEventListener('click', () => openWishlist());
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            openWishlist();
+        });
     });
 }
 

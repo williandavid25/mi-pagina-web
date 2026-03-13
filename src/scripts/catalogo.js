@@ -10,6 +10,7 @@ import { initCart, addToCart, openCart, procesarCompraWhatsApp } from './cartSta
 import { WishlistDrawer } from '../components/wishlist/WishlistDrawer.js';
 import { initWishlist, toggleWishlist, openWishlist } from './wishlistState.js';
 import { initProductClickAnimations } from './animations.js';
+import { HistoryManager } from './utils.js';
 
 // -------------------------------
 // Config maps for display labels
@@ -32,6 +33,9 @@ const ALL_CATEGORIAS = Object.keys(CATEGORIA_META);
 // App entry point
 // -------------------------------
 document.addEventListener('DOMContentLoaded', async () => {
+    // Start history manager
+    HistoryManager.init();
+
     // Inject cart & checkout modals
     const cartContainer = document.getElementById('cart-container');
     if (cartContainer) cartContainer.innerHTML = MiniCart();

@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="./src/styles/component-styles/Cart.css">
     <link rel="stylesheet" href="./src/styles/component-styles/Checkout.css">
     <link rel="stylesheet" href="./src/styles/component-styles/Wishlist.css">
+    <link rel="stylesheet" href="./src/styles/component-styles/Search.css">
     <link rel="stylesheet" href="./src/styles/mobile.css">
 
     <style>
@@ -543,7 +544,6 @@
             <!-- Minimal Footer -->
             <footer class="minimal-footer">
                 <div class="container">
-                    <p class="footer-copy">&copy; 2026 Libardino</p>
                     <div class="footer-links">
                         <a href="privacidad.html">Términos y políticas</a>
                     </div>
@@ -602,8 +602,12 @@
         import { CheckoutModal } from './src/components/forms/CheckoutForm.js';
         import { initCart } from './src/scripts/cartState.js';
         import { initWishlist, openWishlist } from './src/scripts/wishlistState.js';
+        import { HistoryManager } from './src/scripts/utils.js';
 
         document.addEventListener('DOMContentLoaded', () => {
+            // History Management
+            HistoryManager.init();
+            
             // UI Components
             const cartContainer = document.getElementById('cart-container');
             if (cartContainer) cartContainer.innerHTML = MiniCart();
