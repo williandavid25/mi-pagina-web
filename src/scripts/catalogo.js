@@ -123,8 +123,8 @@ function buildFilterChips(products, activeCat, activeGen) {
 
     const chipsConfig = [
         { label: 'Todos',      cat: null,       gen: null },
-        { label: '<span>♂</span> Hombre',  cat: null,       gen: 'hombre' },
-        { label: '<span>♀</span> Mujer',   cat: null,       gen: 'mujer' },
+        { label: 'Hombre',     cat: null,       gen: 'hombre' },
+        { label: 'Mujer',      cat: null,       gen: 'mujer' },
         { label: 'Buzos',      cat: 'buzos',    gen: null },
         { label: 'Camisetas',  cat: 'camisetas', gen: null },
         { label: 'Conjuntos',  cat: 'conjuntos', gen: null },
@@ -164,18 +164,14 @@ function buildFilterChips(products, activeCat, activeGen) {
             renderProducts(applyFilters(products, cat, gen, sort));
 
             // GSAP Professional 3D mechanical feedback
-            gsap.to(btn, { 
-                y: 4, 
-                duration: 0.15, 
-                ease: "power2.inOut",
-                onComplete: () => {
-                    gsap.to(btn, { 
-                        y: 2, 
-                        duration: 0.4, 
-                        ease: "elastic.out(1, 0.75)" 
-                    });
-                }
-            });
+            gsap.timeline()
+                .to(btn, { scale: 0.95, y: 2, duration: 0.1, ease: "power2.inOut" })
+                .to(btn, { 
+                    scale: 1.05, 
+                    y: -2, 
+                    duration: 0.4, 
+                    ease: "elastic.out(1.2, 0.5)" 
+                });
 
             // Update URL without reload
             const url = new URL(window.location);

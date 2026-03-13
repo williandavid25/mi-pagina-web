@@ -144,15 +144,18 @@ export function renderWishlist() {
     const emptyState = document.getElementById('wishlist-empty-state');
     const filledState = document.getElementById('wishlist-filled-state');
     const itemsWrapper = document.getElementById('wishlist-items-wrapper');
-    const badge = document.querySelector('.wishlist-badge');
+    const badges = document.querySelectorAll('.wishlist-badge');
     
-    // Update Badge
-    if (badge) {
-        const count = wishlistItems.length;
+    // Update Badges
+    const count = wishlistItems.length;
+    badges.forEach(badge => {
         badge.textContent = count;
         badge.style.display = count > 0 ? 'flex' : 'none';
-        if (window.gsap && count > 0) gsap.fromTo(badge, {scale: 1.3}, {scale: 1, duration: 0.3});
-    }
+        if (window.gsap && count > 0) {
+            gsap.killTweensOf(badge);
+            gsap.fromTo(badge, {scale: 1.3}, {scale: 1, duration: 0.3});
+        }
+    });
 
     if (!emptyState || !filledState) return;
 
