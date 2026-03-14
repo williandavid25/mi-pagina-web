@@ -4,7 +4,7 @@ import { MiniCart } from '../components/cart/MiniCart.js';
 import { CheckoutModal } from '../components/forms/CheckoutForm.js';
 import { initCart, addToCart, openCart, procesarCompraWhatsApp } from './cartState.js';
 import { AuthModal } from '../components/auth/AuthModal.js';
-import { initGoogleAuth, openAuthModal, closeAuthModal, signOut, simulateEmailAuth, updateCartAuthUI, updateHeaderAuthUI, getUser } from './auth.js';
+import { initGoogleAuth, openAuthModal, closeAuthModal, signOut, simulateEmailAuth, updateCartAuthUI, updateHeaderAuthUI, getUser, initAuthEvents } from './auth.js';
 import { initSearch } from './search.js';
 import { WishlistDrawer } from '../components/wishlist/WishlistDrawer.js';
 import { initWishlist, toggleWishlist, openWishlist } from './wishlistState.js';
@@ -39,7 +39,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     initWishlist();
     initProductClickAnimations();
     setupUIInteractions();
-    setupAuthInteractions();
+    initAuthEvents();
+    initGoogleAuth();
     initSearch(); // Live product search
     
     // 3. Iniciar el Carrusel
@@ -81,141 +82,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Aquí inicializaremos Three.js para el canvas 3D más adelante
 });
 
-function setupAuthInteractions() {
-
-    // ── Current auth mode ─────────────────────────────────────────
-    let authMode = 'register'; // 'login' | 'register'
-
-    function setAuthMode(mode) {
-        authMode = mode;
-        const title        = document.getElementById('auth-modal-title');
-        const submitText   = document.getElementById('auth-submit-text');
-        const toggleBtn    = document.getElementById('auth-toggle-mode');
-        const footerQ      = document.getElementById('auth-footer-question');
-        const benefits     = document.querySelector('.auth-benefits');
-        const nameField    = document.getElementById('auth-name-field');
-        const confirmField = document.getElementById('auth-confirm-field');
-        const errorMsg     = document.getElementById('auth-error-msg');
-
-        if (errorMsg) errorMsg.textContent = '';
-
-        if (mode === 'register') {
-            if (title)        title.textContent          = 'Crea tu cuenta';
-            if (submitText)   submitText.textContent     = 'CREAR CUENTA';
-            if (toggleBtn)    toggleBtn.textContent      = 'Inicia sesión';
-            if (footerQ)      footerQ.textContent        = '¿Ya tienes cuenta?';
-            if (benefits)     benefits.style.display     = '';
-            if (nameField)    nameField.style.display    = '';
-            if (confirmField) confirmField.style.display = '';
-        } else {
-            if (title)        title.textContent          = 'Bienvenido de vuelta';
-            if (submitText)   submitText.textContent     = 'INICIAR SESIÓN';
-            if (toggleBtn)    toggleBtn.textContent      = 'Regístrate gratis';
-            if (footerQ)      footerQ.textContent        = '¿No tienes cuenta?';
-            if (benefits)     benefits.style.display     = 'none';
-            if (nameField)    nameField.style.display    = 'none';
-            if (confirmField) confirmField.style.display = 'none';
-        }
-    }
-
-    // ── Password visibility toggle ────────────────────────────────
-    document.addEventListener('click', (e) => {
-        const btn = e.target.closest('.auth-toggle-password');
-        if (!btn) return;
-        const input = document.getElementById(btn.dataset.target);
-        if (!input) return;
-        input.type = input.type === 'password' ? 'text' : 'password';
-    });
-
-    // ── Toggle mode (login ↔ register) ───────────────────────────
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('#auth-toggle-mode')) return;
-        setAuthMode(authMode === 'register' ? 'login' : 'register');
-    });
-
-    // ── Open / Close Modal ────────────────────────────────────────
-    document.addEventListener('click', (e) => {
-        if (
-            e.target.closest('#cart-login-banner') ||
-            e.target.closest('#cart-login-banner-filled') ||
-            e.target.id === 'cart-login-trigger' ||
-            e.target.closest('#header-login-btn')
-        ) {
-            openAuthModal();
-            setTimeout(() => setAuthMode('register'), 50);
-        }
-        if (e.target.closest('#cart-signout-btn')) signOut();
-        if (e.target.closest('#auth-close-btn') || e.target.id === 'auth-modal-overlay') closeAuthModal();
-        if (e.target.closest('#header-user-avatar')) {
-            if (confirm('¿Cerrar sesión?')) signOut();
-        }
-    });
-
-    // ── Unified form submit ───────────────────────────────────────
-    document.addEventListener('submit', async (e) => {
-        if (!e.target.matches('#auth-email-form')) return;
-        e.preventDefault();
-
-        const email      = document.getElementById('auth-email')?.value?.trim();
-        const password   = document.getElementById('auth-password')?.value;
-        const name       = document.getElementById('auth-name')?.value?.trim();
-        const confirm2   = document.getElementById('auth-confirm')?.value;
-        const errorMsg   = document.getElementById('auth-error-msg');
-        const submitBtn  = document.getElementById('btn-auth-submit');
-        const spinner    = document.getElementById('auth-spinner');
-        const submitText = document.getElementById('auth-submit-text');
-        const isRegister = authMode === 'register';
-
-        if (errorMsg) errorMsg.textContent = '';
-
-        // Validate
-        if (isRegister && !name) {
-            if (errorMsg) errorMsg.textContent = 'Por favor ingresa tu nombre completo.';
-            return;
-        }
-        if (!email || !password) {
-            if (errorMsg) errorMsg.textContent = 'Por favor completa todos los campos.';
-            return;
-        }
-        if (!email.includes('@') || !email.includes('.')) {
-            if (errorMsg) errorMsg.textContent = 'Ingresa un correo electrónico válido.';
-            return;
-        }
-        if (password.length < 6) {
-            if (errorMsg) errorMsg.textContent = 'La contraseña debe tener al menos 6 caracteres.';
-            return;
-        }
-        if (isRegister && confirm2 !== password) {
-            if (errorMsg) errorMsg.textContent = 'Las contraseñas no coinciden.';
-            return;
-        }
-
-        // Loading
-        if (submitBtn) submitBtn.disabled = true;
-        if (spinner)   spinner.style.display = 'inline-block';
-        if (submitText) submitText.textContent = '';
-
-        try {
-            await simulateEmailAuth(email, password, isRegister, isRegister ? name : null);
-        } catch (err) {
-            if (errorMsg) errorMsg.textContent = 'Ocurrió un error, inténtalo de nuevo.';
-        } finally {
-            if (submitBtn) submitBtn.disabled = false;
-            if (spinner)   spinner.style.display = 'none';
-            if (submitText) submitText.textContent = isRegister ? 'CREAR CUENTA' : 'INICIAR SESIÓN';
-        }
-    });
-
-    // ── Google Sign-In ────────────────────────────────────────────
-    if (window.google?.accounts?.id) {
-        initGoogleAuth();
-    } else {
-        window.addEventListener('load', () => {
-            if (window.google?.accounts?.id) initGoogleAuth();
-            else setTimeout(() => { if (window.google?.accounts?.id) initGoogleAuth(); }, 1500);
-        });
-    }
-}
 
 function setupUIInteractions() {
     const checkoutBtn = document.getElementById('btn-checkout-whatsapp');

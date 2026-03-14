@@ -9,6 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800;900&family=Outfit:wght@300;400;500;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <!-- Google Identity Services -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     
     <!-- Styles -->
     <link rel="stylesheet" href="./src/styles/variables.css">
@@ -20,6 +22,7 @@
     <link rel="stylesheet" href="./src/styles/component-styles/ProductDetail.css">
     <link rel="stylesheet" href="./src/styles/component-styles/Wishlist.css">
     <link rel="stylesheet" href="./src/styles/component-styles/Search.css">
+    <link rel="stylesheet" href="./src/styles/component-styles/Auth.css">
     <link rel="stylesheet" href="./src/styles/mobile.css">
 </head>
 <body>
@@ -49,7 +52,6 @@
                             <a href="catalogo.html?categoria=camisetas" class="dropdown-link">Camisetas</a>
                             <a href="catalogo.html?categoria=conjuntos" class="dropdown-link">Conjuntos</a>
                             <a href="catalogo.html?categoria=pantalones" class="dropdown-link">Pantalones</a>
-                            <a href="catalogo.html?categoria=chaquetas" class="dropdown-link">Chaquetas</a>
                         </div>
                     </div>
                     <a href="contacto.html" class="nav-item">Contacto</a>
@@ -181,6 +183,7 @@
     <div id="cart-container"></div>
     <div id="checkout-container"></div>
     <div id="wishlist-container"></div>
+    <div id="auth-container"></div>
 
     <!-- Mobile Menu Slide-out -->
     <div class="mobile-menu-overlay" id="mobile-menu">
@@ -201,7 +204,6 @@
                         <li><a href="catalogo.html?categoria=camisetas" class="mobile-sublink">CAMISETAS</a></li>
                         <li><a href="catalogo.html?categoria=conjuntos" class="mobile-sublink">CONJUNTOS</a></li>
                         <li><a href="catalogo.html?categoria=pantalones" class="mobile-sublink">PANTALONES</a></li>
-                        <li><a href="catalogo.html?categoria=chaquetas" class="mobile-sublink">CHAQUETAS</a></li>
                     </ul>
                 </li>
             </ul>

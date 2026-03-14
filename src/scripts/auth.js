@@ -12,7 +12,9 @@
  * 5. Replace GOOGLE_CLIENT_ID below with your real client ID
  */
 import { HistoryManager } from './utils.js';
+import { AuthModal } from '../components/auth/AuthModal.js';
 
+export { AuthModal };
 export const GOOGLE_CLIENT_ID = '440096429908-li0naluh0idbvqo3rn8hhbma55nm0i75.apps.googleusercontent.com';
 
 // ── Auth State ──────────────────────────────────────────────────
@@ -75,8 +77,127 @@ export function simulateEmailAuth(email, password, isRegister = false, customNam
             localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(currentUser));
             onAuthChange(currentUser);
             resolve(currentUser);
-        }, 1200);
+        }, 800);
     });
+}
+
+/** Initialize consistent Auth Events for all pages */
+export function initAuthEvents() {
+    let authMode = 'register'; // 'login' | 'register'
+
+    function setAuthMode(mode) {
+        authMode = mode;
+        const title        = document.getElementById('auth-modal-title');
+        const submitText   = document.getElementById('auth-submit-text');
+        const toggleBtn    = document.getElementById('auth-toggle-mode');
+        const footerQ      = document.getElementById('auth-footer-question');
+        const benefits     = document.querySelector('.auth-benefits');
+        const nameField    = document.getElementById('auth-name-field');
+        const confirmField = document.getElementById('auth-confirm-field');
+        const errorMsg     = document.getElementById('auth-error-msg');
+
+        if (errorMsg) errorMsg.textContent = '';
+
+        if (mode === 'register') {
+            if (title)        title.textContent          = 'Crea tu cuenta';
+            if (submitText)   submitText.textContent     = 'CREAR CUENTA';
+            if (toggleBtn)    toggleBtn.textContent      = 'Inicia sesión';
+            if (footerQ)      footerQ.textContent        = '¿Ya tienes cuenta?';
+            if (benefits)     benefits.style.display     = '';
+            if (nameField)    nameField.style.display    = '';
+            if (confirmField) confirmField.style.display = '';
+        } else {
+            if (title)        title.textContent          = 'Bienvenido de vuelta';
+            if (submitText)   submitText.textContent     = 'INICIAR SESIÓN';
+            if (toggleBtn)    toggleBtn.textContent      = 'Regístrate gratis';
+            if (footerQ)      footerQ.textContent        = '¿No tienes cuenta?';
+            if (benefits)     benefits.style.display     = 'none';
+            if (nameField)    nameField.style.display    = 'none';
+            if (confirmField) confirmField.style.display = 'none';
+        }
+    }
+
+    // Passwords visibility
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('.auth-toggle-password');
+        if (!btn) return;
+        const input = document.getElementById(btn.dataset.target);
+        if (!input) return;
+        input.type = input.type === 'password' ? 'text' : 'password';
+    });
+
+    // Toggle mode
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('#auth-toggle-mode')) return;
+        setAuthMode(authMode === 'register' ? 'login' : 'register');
+    });
+
+    // Opening/Closing
+    document.addEventListener('click', (e) => {
+        if (
+            e.target.closest('#header-login-btn') || 
+            e.target.closest('#cart-login-trigger') ||
+            e.target.closest('#cart-login-banner')
+        ) {
+            openAuthModal();
+            setTimeout(() => setAuthMode('register'), 50);
+        }
+        if (e.target.closest('#cart-signout-btn') || e.target.closest('#header-user-avatar') || e.target.closest('.header-avatar-btn')) {
+            signOut();
+        }
+        if (e.target.closest('#auth-close-btn') || e.target.id === 'auth-modal-overlay') {
+            closeAuthModal();
+        }
+    });
+
+    // Unified Submit
+    document.addEventListener('submit', async (e) => {
+        if (!e.target.matches('#auth-email-form')) return;
+        e.preventDefault();
+
+        const email      = document.getElementById('auth-email')?.value?.trim();
+        const password   = document.getElementById('auth-password')?.value;
+        const name       = document.getElementById('auth-name')?.value?.trim();
+        const confirm2   = document.getElementById('auth-confirm')?.value;
+        const errorMsg   = document.getElementById('auth-error-msg');
+        const submitBtn  = document.getElementById('btn-auth-submit');
+        const spinner    = document.getElementById('auth-spinner');
+        const submitText = document.getElementById('auth-submit-text');
+        const isRegister = authMode === 'register';
+
+        if (errorMsg) errorMsg.textContent = '';
+
+        if (isRegister && !name) {
+            if (errorMsg) errorMsg.textContent = 'Ingresa tu nombre.';
+            return;
+        }
+        if (!email || !password) {
+            if (errorMsg) errorMsg.textContent = 'Completa todos los campos.';
+            return;
+        }
+        if (isRegister && confirm2 !== password) {
+            if (errorMsg) errorMsg.textContent = 'Las contraseñas no coinciden.';
+            return;
+        }
+
+        if (submitBtn) submitBtn.disabled = true;
+        if (spinner) spinner.style.display = 'inline-block';
+        if (submitText) submitText.textContent = '';
+
+        try {
+            await simulateEmailAuth(email, password, isRegister, isRegister ? name : null);
+        } catch (err) {
+            if (errorMsg) errorMsg.textContent = 'Error al autenticar.';
+        } finally {
+            if (submitBtn) submitBtn.disabled = false;
+            if (spinner) spinner.style.display = 'none';
+            if (submitText) submitText.textContent = isRegister ? 'CREAR CUENTA' : 'INICIAR SESIÓN';
+        }
+    });
+
+    // Initial check
+    const user = loadUser();
+    onAuthChange(user);
 }
 
 // ── UI Update Callback ───────────────────────────────────────────
@@ -133,19 +254,44 @@ export function updateCartAuthUI(user) {
 
 // ── Header Avatar ────────────────────────────────────────────────
 export function updateHeaderAuthUI(user) {
-    const headerAvatar = document.getElementById('header-user-avatar');
-    const loginIconBtn = document.getElementById('header-login-btn');
+    const loginBtn = document.getElementById('header-login-btn');
+    const userBtn  = document.getElementById('header-user-avatar');
+
+    if (!loginBtn || !userBtn) {
+        console.warn('Auth UI: header-login-btn o header-user-avatar no encontrados en esta página.');
+        return;
+    }
 
     if (user) {
-        if (headerAvatar) {
-            headerAvatar.style.display     = 'flex';
-            const img = headerAvatar.querySelector('img');
-            if (img) img.src = user.picture || '';
+        loginBtn.style.display = 'none';
+        userBtn.style.display  = 'flex';
+        
+        const avatarImg = userBtn.querySelector('img');
+        if (avatarImg) {
+            if (user.picture) {
+                avatarImg.src = user.picture;
+                avatarImg.style.display = 'block';
+                // Remove any existing initials 
+                const initials = userBtn.querySelector('.avatar-initials');
+                if (initials) initials.remove();
+            } else {
+                avatarImg.style.display = 'none';
+                // Create initials if not present
+                let initialsEl = userBtn.querySelector('.avatar-initials');
+                if (!initialsEl) {
+                    initialsEl = document.createElement('span');
+                    initialsEl.className = 'avatar-initials';
+                    userBtn.appendChild(initialsEl);
+                }
+                const names = user.name.split(' ');
+                initialsEl.textContent = names.length > 1 
+                    ? (names[0][0] + names[1][0]).toUpperCase()
+                    : names[0][0].toUpperCase();
+            }
         }
-        if (loginIconBtn) loginIconBtn.style.display = 'none';
     } else {
-        if (headerAvatar)  headerAvatar.style.display  = 'none';
-        if (loginIconBtn) loginIconBtn.style.display  = '';
+        loginBtn.style.display = 'flex';
+        userBtn.style.display  = 'none';
     }
 }
 

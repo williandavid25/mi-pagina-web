@@ -9,6 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800;900&family=Outfit:wght@300;400;500;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <!-- Google Identity Services -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 
     <!-- Styles -->
     <link rel="stylesheet" href="./src/styles/variables.css">
@@ -19,6 +21,10 @@
     <link rel="stylesheet" href="./src/styles/component-styles/Cart.css">
     <link rel="stylesheet" href="./src/styles/component-styles/Checkout.css">
     <link rel="stylesheet" href="./src/styles/component-styles/Search.css">
+    <link rel="stylesheet" href="./src/styles/component-styles/Wishlist.css">
+    <link rel="stylesheet" href="./src/styles/component-styles/Auth.css">
+    <link rel="stylesheet" href="./src/styles/component-styles/HeroSections.css">
+    <link rel="stylesheet" href="./src/styles/mobile.css">
 
     <style>
         /* Page-specific styles for Catalog page */
@@ -26,47 +32,6 @@
             min-height: 100vh;
             padding-top: 140px; /* Increased for logo clearance */
             background: var(--color-bg-primary);
-        }
-
-        .catalog-hero {
-            padding-top: 140px; /* Increased for logo clearance */
-            padding-bottom: 3rem;
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-            color: white;
-            text-align: center;
-        }
-
-        .catalog-hero-label {
-            display: inline-block;
-            background: var(--color-accent-yellow);
-            color: #000;
-            font-size: 0.75rem;
-            font-weight: 900;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            padding: 0.4rem 1rem;
-            border-radius: 999px;
-            margin-bottom: 1rem;
-        }
-
-        .catalog-hero-title {
-            font-family: 'Montserrat', sans-serif;
-            font-size: clamp(2.5rem, 6vw, 5rem);
-            font-weight: 900;
-            color: white;
-            text-transform: uppercase;
-            line-height: 1;
-            margin-bottom: 0.5rem;
-        }
-
-        .catalog-hero-title span {
-            color: var(--color-accent-yellow);
-        }
-
-        .catalog-hero-sub {
-            font-size: 1rem;
-            color: rgba(255,255,255,0.6);
-            margin-top: 0.75rem;
         }
 
         .catalog-result-count {
@@ -264,7 +229,6 @@
                             <a href="catalogo.html?categoria=camisetas" class="dropdown-link">Camisetas</a>
                             <a href="catalogo.html?categoria=conjuntos" class="dropdown-link">Conjuntos</a>
                             <a href="catalogo.html?categoria=pantalones" class="dropdown-link">Pantalones</a>
-                            <a href="catalogo.html?categoria=chaquetas" class="dropdown-link">Chaquetas</a>
                         </div>
                     </div>
                 </nav>
@@ -294,15 +258,17 @@
         </header>
 
         <div class="catalog-page">
-            <!-- Hero Banner -->
-            <div class="catalog-hero" id="catalog-hero">
+            <!-- Hero Banner Dynamic -->
+            <section class="hero-section hero-catalogo" id="catalog-hero">
                 <div class="container">
-                    <span class="catalog-hero-label" id="hero-label">Colección Completa</span>
-                    <h1 class="catalog-hero-title" id="hero-title">TODOS LOS <span>MODELOS</span></h1>
-                    <p class="catalog-hero-sub" id="hero-sub">Streetwear oversize de calidad premium</p>
-                    <p class="catalog-result-count" id="result-count"></p>
+                    <div class="hero-content">
+                        <span class="badge-yellow" id="hero-label">Colección Completa</span>
+                        <h1 id="hero-title">TODOS LOS <span class="text-yellow">MODELOS</span></h1>
+                        <p id="hero-sub">Streetwear oversize de calidad premium</p>
+                        <p class="catalog-result-count" id="result-count"></p>
+                    </div>
                 </div>
-            </div>
+            </section>
 
             <!-- Filter Chips Bar -->
             <div class="catalog-controls">
@@ -353,6 +319,7 @@
     <div id="cart-container"></div>
     <div id="checkout-container"></div>
     <div id="wishlist-container"></div>
+    <div id="auth-container"></div>
 
     <!-- Mobile Menu -->
     <div class="mobile-menu-overlay" id="mobile-menu">
@@ -373,7 +340,6 @@
                         <li><a href="catalogo.html?categoria=camisetas" class="mobile-sublink">CAMISETAS</a></li>
                         <li><a href="catalogo.html?categoria=conjuntos" class="mobile-sublink">CONJUNTOS</a></li>
                         <li><a href="catalogo.html?categoria=pantalones" class="mobile-sublink">PANTALONES</a></li>
-                        <li><a href="catalogo.html?categoria=chaquetas" class="mobile-sublink">CHAQUETAS</a></li>
                     </ul>
                 </li>
             </ul>

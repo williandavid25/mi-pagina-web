@@ -10,21 +10,22 @@ import { initCart, addToCart, openCart, procesarCompraWhatsApp } from './cartSta
 import { WishlistDrawer } from '../components/wishlist/WishlistDrawer.js';
 import { initWishlist, toggleWishlist, openWishlist } from './wishlistState.js';
 import { initProductClickAnimations } from './animations.js';
+import { initGoogleAuth, initAuthEvents, AuthModal } from './auth.js';
 import { HistoryManager } from './utils.js';
 
 // -------------------------------
 // Config maps for display labels
 // -------------------------------
 const CATEGORIA_META = {
-    buzos:      { label: 'Buzos & Sudaderas', heroTitle: 'BUZOS &<br><span>SUDADERAS</span>', sub: 'Oversize con 300GSM · La comodidad que defines.' },
-    camisetas:  { label: 'Camisetas', heroTitle: 'CAMI<span>SETAS</span>', sub: 'Corte relajado · Tejidos premium.' },
-    conjuntos:  { label: 'Conjuntos', heroTitle: 'CON<span>JUNTOS</span>', sub: 'El look completo en un solo movimiento.' },
-    pantalones: { label: 'Pantalones', heroTitle: 'PANTA<span>LONES</span>', sub: 'Cargo, wide-leg y relaxed fit.' },
+    buzos:      { label: 'NUEVA TEMPORADA', heroTitle: 'NUESTROS <span class="text-yellow">BUZOS</span>', sub: 'Diseños exclusivos con el mejor gramaje y confort.' },
+    camisetas:  { label: 'PREMIUM COTTON',  heroTitle: 'BASIC <span class="text-yellow">OVERSAYS</span>',  sub: 'Calidad superior en cada fibra y estilo relajado.' },
+    conjuntos:  { label: 'LOOK COMPLETO',   heroTitle: 'NUESTROS <span class="text-yellow">CONJUNTOS</span>', sub: 'La mejor combinación urbana lista para cualquier ocasión.' },
+    pantalones: { label: 'COLECCIÓN 2026',  heroTitle: 'ESTILO <span class="text-yellow">RELAXED</span>',   sub: 'Pantalones con el calce perfecto para tu día a día.' },
 };
 
 const GENERO_META = {
-    hombre: { label: 'Hombre', heroTitle: 'COLECCIÓN<br><span>HOMBRE</span>', sub: 'Streetwear urban para él.' },
-    mujer:  { label: 'Mujer',  heroTitle: 'COLECCIÓN<br><span>MUJER</span>',  sub: 'Estilo oversize para ella.' },
+    hombre: { label: 'URBAN STYLE', heroTitle: 'COLECCIÓN <span class="text-yellow">HOMBRE</span>', sub: 'Streetwear premium para el hombre moderno' },
+    mujer:  { label: 'URBAN STYLE', heroTitle: 'COLECCIÓN <span class="text-yellow">MUJER</span>', sub: 'Estilo oversize diseñado exclusivamente para ella' },
 };
 
 const ALL_CATEGORIAS = Object.keys(CATEGORIA_META);
@@ -45,8 +46,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     const wishlistContainer = document.getElementById('wishlist-container');
     if (wishlistContainer) wishlistContainer.innerHTML = WishlistDrawer();
 
+    const authContainer = document.getElementById('auth-container');
+    if (authContainer) authContainer.innerHTML = AuthModal();
+
     initCart();
     initWishlist();
+    initAuthEvents();
+    initGoogleAuth();
     initProductClickAnimations();
     setupMenuInteractions();
 
@@ -55,31 +61,42 @@ document.addEventListener('DOMContentLoaded', async () => {
     const categoriaParam = params.get('categoria')?.toLowerCase() || null;
     const generoParam    = params.get('genero')?.toLowerCase()    || null;
 
-    // Fetch all products
-    let allProducts = [];
+    // Fetch and Render
     try {
+        console.log('Catálogo: Iniciando carga de productos...');
         const res = await fetch('./MOCK_DATA/productos.json');
-        if (!res.ok) throw new Error('Network error');
-        allProducts = await res.json();
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        
+        const allProducts = await res.json();
+        console.log(`Catálogo: ${allProducts.length} productos cargados. Iniciando renderizado...`);
+
+        updateHero(categoriaParam, generoParam);
+        console.log('Catálogo: Hero actualizado.');
+        buildFilterChips(allProducts, categoriaParam, generoParam);
+        console.log('Catálogo:Chips construidos.');
+        renderProducts(applyFilters(allProducts, categoriaParam, generoParam));
+        console.log('Catálogo: Productos renderizados.');
+        
+        // Sort handler
+        const sortSelect = document.getElementById('sort-select');
+            sortSelect.addEventListener('change', (e) => {
+                const activeChip = document.querySelector('.filter-chip.active');
+                const activeCat = activeChip ? activeChip.dataset.cat || null : null;
+                const activeGen = activeChip ? activeChip.dataset.gen || null : null;
+                renderProducts(applyFilters(allProducts, activeCat, activeGen, e.target.value));
+            });
+
     } catch (e) {
-        console.error('Error cargando productos:', e);
-        document.getElementById('catalog-grid-container').innerHTML =
-            '<p style="text-align:center;padding:3rem;color:#999;">No se pudieron cargar los productos.</p>';
-        return;
+        console.error('Catálogo: Error crítico en inicialización:', e);
+        const container = document.getElementById('catalog-grid-container');
+        if (container) {
+            container.innerHTML = `
+                <div style="text-align:center; padding: 4rem 2rem; color: #666;">
+                    <p>Lo sentimos, no pudimos cargar el catálogo en este momento.</p>
+                    <button onclick="window.location.reload()" style="margin-top: 1rem; padding: 0.8rem 1.6rem; background: #000; color: #fff; border: none; border-radius: 99px; cursor: pointer;">Reintentar</button>
+                </div>`;
+        }
     }
-
-    // Apply initial filter based on URL param
-    updateHero(categoriaParam, generoParam);
-    buildFilterChips(allProducts, categoriaParam, generoParam);
-    renderProducts(applyFilters(allProducts, categoriaParam, generoParam));
-
-    // Sort handler
-    document.getElementById('sort-select').addEventListener('change', (e) => {
-        const activeChip = document.querySelector('.chip.active');
-        const activeCat = activeChip ? activeChip.dataset.cat || null : null;
-        const activeGen = activeChip ? activeChip.dataset.gen || null : null;
-        renderProducts(applyFilters(allProducts, activeCat, activeGen, e.target.value));
-    });
 
     // Scroll-triggered header
     window.addEventListener('scroll', () => {
@@ -94,27 +111,52 @@ document.addEventListener('DOMContentLoaded', async () => {
 // Hero Banner
 // -------------------------------
 function updateHero(categoria, genero) {
+    const heroEl    = document.getElementById('catalog-hero');
     const labelEl   = document.getElementById('hero-label');
     const titleEl   = document.getElementById('hero-title');
     const subEl     = document.getElementById('hero-sub');
 
-    if (categoria && CATEGORIA_META[categoria]) {
-        const m = CATEGORIA_META[categoria];
-        if (labelEl) labelEl.textContent = m.label;
-        if (titleEl) titleEl.innerHTML   = m.heroTitle;
-        if (subEl) subEl.textContent     = m.sub;
-        document.title = `${m.label} | Ellel Oversize`;
-    } else if (genero && GENERO_META[genero]) {
-        const m = GENERO_META[genero];
-        if (labelEl) labelEl.textContent = m.label;
-        if (titleEl) titleEl.innerHTML   = m.heroTitle;
-        if (subEl) subEl.textContent     = m.sub;
-        document.title = `${m.label} | Ellel Oversize`;
+    if (!heroEl) return;
+
+    // Reset hero classes
+    const heroClasses = ['hero-buzos', 'hero-camisetas', 'hero-catalogo', 'hero-conjuntos', 'hero-hombre', 'hero-mujer', 'hero-pantalones'];
+    heroEl.classList.remove(...heroClasses);
+    heroEl.classList.add('hero-section');
+
+    const hasGSAP = typeof gsap !== 'undefined';
+
+    const performUpdate = () => {
+        if (categoria && CATEGORIA_META[categoria]) {
+            const m = CATEGORIA_META[categoria];
+            if (labelEl) labelEl.textContent = m.label;
+            if (titleEl) titleEl.innerHTML   = m.heroTitle;
+            if (subEl) subEl.textContent     = m.sub;
+            heroEl.classList.add(`hero-${categoria}`);
+            document.title = `${m.label} | Ellel Oversize`;
+        } else if (genero && GENERO_META[genero]) {
+            const m = GENERO_META[genero];
+            if (labelEl) labelEl.textContent = m.label;
+            if (titleEl) titleEl.innerHTML   = m.heroTitle;
+            if (subEl) subEl.textContent     = m.sub;
+            heroEl.classList.add(`hero-${genero}`);
+            document.title = `${m.label} | Ellel Oversize`;
+        } else {
+            if (labelEl) labelEl.textContent = 'COLECCIÓN COMPLETA';
+            if (titleEl) titleEl.innerHTML   = 'TODOS LOS <span class="text-yellow">MODELOS</span>';
+            if (subEl) subEl.textContent     = 'Streetwear oversize de calidad premium para redefinir tu estilo.';
+            heroEl.classList.add('hero-catalogo');
+            document.title = 'Catálogo | Ellel Oversize';
+        }
+        
+        if (hasGSAP) {
+            gsap.to('.hero-content', { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" });
+        }
+    };
+
+    if (hasGSAP) {
+        gsap.to('.hero-content', { opacity: 0, y: 15, duration: 0.3, onComplete: performUpdate });
     } else {
-        if (labelEl) labelEl.textContent = 'Colección Completa';
-        if (titleEl) titleEl.innerHTML   = 'TODOS LOS <span>MODELOS</span>';
-        if (subEl) subEl.textContent     = 'Streetwear oversize de calidad premium';
-        document.title = 'Catálogo | Ellel Oversize';
+        performUpdate();
     }
 }
 
@@ -255,12 +297,12 @@ function renderProducts(products) {
 // Menu / UI interactions
 // -------------------------------
 function setupMenuInteractions() {
-    const menuBtn      = document.getElementById('open-menu-btn');
-    const closeMenuBtn = document.getElementById('close-menu-btn');
-    const mobileMenu   = document.getElementById('mobile-menu');
+    const menuBtn = document.getElementById('open-menu-btn');
+    const closeBtn = document.getElementById('close-menu-btn');
+    const menu = document.getElementById('mobile-menu');
 
-    if (menuBtn  && mobileMenu) menuBtn.addEventListener('click',  () => mobileMenu.classList.add('active'));
-    if (closeMenuBtn && mobileMenu) closeMenuBtn.addEventListener('click', () => mobileMenu.classList.remove('active'));
+    if (menuBtn  && menu) menuBtn.addEventListener('click',  () => menu.classList.add('active'));
+    if (closeBtn && menu) closeBtn.addEventListener('click', () => menu.classList.remove('active'));
 
     const checkoutBtn       = document.getElementById('btn-checkout-whatsapp');
     const checkoutOverlay   = document.getElementById('checkout-overlay');

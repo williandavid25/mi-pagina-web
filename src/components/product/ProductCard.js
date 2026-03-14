@@ -19,7 +19,7 @@ export const ProductCard = (product) => {
                 <a href="producto.html?id=${product.id}" style="text-decoration: none; color: inherit; display: inline-block;">
                     <h3 class="product-title" title="${product.nombre}">${product.nombre}</h3>
                 </a>
-                <span class="product-desc-mini">${product.descripcion.substring(0, 30)}...</span>
+                <span class="product-desc-mini">${(product.descripcion || '').substring(0, 30)}...</span>
                 
                 <div class="product-meta">
                     <span class="product-price">$${product.precio.toFixed(2)}</span>
