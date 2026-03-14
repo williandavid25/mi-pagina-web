@@ -48,10 +48,76 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (descLink) descLink.textContent = product.descripcion;
 
                 // Update Image
-                if (mainImg && product.imagenes && product.imagenes[0]) {
+                if (mainImg && product.imagenes && product.imagenes.length > 0) {
                     mainImg.src = product.imagenes[0];
                     mainImg.alt = product.nombre;
                 }
+
+                // --- 1. Gallery Thumbnails Logic (Robust) ---
+                const thumbContainer = document.getElementById('pdp-thumbnails');
+                if (thumbContainer && product.imagenes && product.imagenes.length > 1) {
+                    thumbContainer.innerHTML = product.imagenes.map((img, idx) => `
+                        <div class="pdp-thumb-item ${idx === 0 ? 'active' : ''}" data-index="${idx}">
+                            <img src="${img}" alt="${product.nombre} vista ${idx + 1}" class="pdp-thumb-img">
+                        </div>
+                    `).join('');
+
+                    const thumbs = thumbContainer.querySelectorAll('.pdp-thumb-item');
+                    thumbs.forEach(thumb => {
+                        thumb.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            const index = parseInt(thumb.getAttribute('data-index'));
+                            const newSrc = product.imagenes[index];
+                            
+                            // Visual Feedback immediately
+                            thumbs.forEach(t => t.classList.remove('active'));
+                            thumb.classList.add('active');
+
+                            // Smooth crossover transition
+                            if (window.gsap) {
+                                gsap.to(mainImg, { 
+                                    opacity: 0, 
+                                    duration: 0.15, 
+                                    onComplete: () => {
+                                        mainImg.src = newSrc;
+                                        gsap.to(mainImg, { opacity: 1, duration: 0.25, ease: 'power2.out' });
+                                    }
+                                });
+                            } else {
+                                mainImg.src = newSrc;
+                            }
+                        });
+                    });
+                } else if (thumbContainer) {
+                    thumbContainer.innerHTML = '';
+                }
+
+                // --- 2. Dynamic Color Swatches ---
+                const colorContainer = document.getElementById('pdp-color-swatches');
+                if (colorContainer && product.colores) {
+                    colorContainer.innerHTML = product.colores.map((color, idx) => `
+                        <div class="swatch ${idx === 0 ? 'active' : ''}" 
+                             style="background: ${color};" 
+                             data-color="${color}"></div>
+                    `).join('');
+
+                    // Re-bind click events for dynamic swatches
+                    const swatches = colorContainer.querySelectorAll('.swatch');
+                    swatches.forEach(swatch => {
+                        swatch.addEventListener('click', (e) => {
+                            swatches.forEach(s => s.classList.remove('active'));
+                            swatch.classList.add('active');
+                            selectedColor = swatch.getAttribute('data-color');
+                            
+                            // Feedback animation
+                            if (window.gsap) {
+                                gsap.fromTo(mainImg, { filter: 'brightness(1.5)' }, { filter: 'brightness(1)', duration: 0.4 });
+                            }
+                        });
+                    });
+                }
+                
+                console.log('PDP: Vista de detalle actualizada con galería y colores dinámicos.');
                 
                 // Actualizar tallas y colores si es necesario dinamicamente (Opcional)
                 console.log('PDP: Vista de detalle actualizada correctamente.');

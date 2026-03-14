@@ -15,15 +15,15 @@ import { initProductClickAnimations } from './animations.js';
 // Config maps for display labels
 // -------------------------------
 const CATEGORIA_META = {
-    buzos:      { label: 'Buzos & Sudaderas', heroTitle: 'BUZOS &<br><span>SUDADERAS</span>', sub: 'Oversize con 300GSM · La comodidad que defines.' },
-    camisetas:  { label: 'Camisetas', heroTitle: 'CAMI<span>SETAS</span>', sub: 'Corte relajado · Tejidos premium.' },
-    conjuntos:  { label: 'Conjuntos', heroTitle: 'CON<span>JUNTOS</span>', sub: 'El look completo en un solo movimiento.' },
-    pantalones: { label: 'Pantalones', heroTitle: 'PANTA<span>LONES</span>', sub: 'Cargo, wide-leg y relaxed fit.' },
+    buzos:      { label: 'Buzos & Sudaderas', heroTitle: 'BUZOS &<br><span>SUDADERAS</span>', sub: 'Oversize con 300GSM · La comodidad que defines.', banner: './public/src/assets/img/banners/banner-hoodie-negro.jpg' },
+    camisetas:  { label: 'Camisetas', heroTitle: 'CAMI<span>SETAS</span>', sub: 'Corte relajado · Tejidos premium.', banner: './public/src/assets/img/banners/banner-hoodie-marfil.jpg' },
+    conjuntos:  { label: 'Conjuntos', heroTitle: 'CON<span>JUNTOS</span>', sub: 'El look completo en un solo movimiento.', banner: './public/src/assets/img/banners/banner-hoodie-azulelectrico.jpg' },
+    pantalones: { label: 'Pantalones', heroTitle: 'PANTA<span>LONES</span>', sub: 'Cargo, wide-leg y relaxed fit.', banner: './public/src/assets/img/banners/1773289479333.png' },
 };
 
 const GENERO_META = {
-    hombre: { label: 'Hombre', heroTitle: 'COLECCIÓN<br><span>HOMBRE</span>', sub: 'Streetwear urban para él.' },
-    mujer:  { label: 'Mujer',  heroTitle: 'COLECCIÓN<br><span>MUJER</span>',  sub: 'Estilo oversize para ella.' },
+    hombre: { label: 'Hombre', heroTitle: 'COLECCIÓN<br><span>HOMBRE</span>', sub: 'Streetwear urban para él.', banner: './public/src/assets/img/banners/1773289601640.png' },
+    mujer:  { label: 'Mujer',  heroTitle: 'COLECCIÓN<br><span>MUJER</span>',  sub: 'Estilo oversize para ella.', banner: './public/src/assets/img/banners/1773290080697.png' },
 };
 
 const ALL_CATEGORIAS = Object.keys(CATEGORIA_META);
@@ -90,27 +90,44 @@ document.addEventListener('DOMContentLoaded', async () => {
 // Hero Banner
 // -------------------------------
 function updateHero(categoria, genero) {
+    const heroEl    = document.getElementById('catalog-hero');
     const labelEl   = document.getElementById('hero-label');
     const titleEl   = document.getElementById('hero-title');
     const subEl     = document.getElementById('hero-sub');
 
+    let meta = null;
     if (categoria && CATEGORIA_META[categoria]) {
-        const m = CATEGORIA_META[categoria];
-        if (labelEl) labelEl.textContent = m.label;
-        if (titleEl) titleEl.innerHTML   = m.heroTitle;
-        if (subEl) subEl.textContent     = m.sub;
-        document.title = `${m.label} | Ellel Oversize`;
+        meta = CATEGORIA_META[categoria];
     } else if (genero && GENERO_META[genero]) {
-        const m = GENERO_META[genero];
-        if (labelEl) labelEl.textContent = m.label;
-        if (titleEl) titleEl.innerHTML   = m.heroTitle;
-        if (subEl) subEl.textContent     = m.sub;
-        document.title = `${m.label} | Ellel Oversize`;
+        meta = GENERO_META[genero];
+    }
+
+    if (meta) {
+        if (labelEl) labelEl.textContent = meta.label;
+        if (titleEl) titleEl.innerHTML   = meta.heroTitle;
+        if (subEl) subEl.textContent     = meta.sub;
+        document.title = `${meta.label} | Ellel Oversize`;
+        
+        // Restore Banner Image
+        if (heroEl && meta.banner) {
+            heroEl.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('${meta.banner}')`;
+            heroEl.style.backgroundSize = 'cover';
+            heroEl.style.backgroundPosition = 'center';
+            heroEl.style.backgroundAttachment = 'fixed';
+            
+            // GSAP Entrance for background
+            if (window.gsap) {
+                gsap.fromTo(heroEl, { backgroundPosition: "center 40%" }, { backgroundPosition: "center 50%", duration: 1.5, ease: "power2.out" });
+            }
+        }
     } else {
         if (labelEl) labelEl.textContent = 'Colección Completa';
         if (titleEl) titleEl.innerHTML   = 'TODOS LOS <span>MODELOS</span>';
         if (subEl) subEl.textContent     = 'Streetwear oversize de calidad premium';
         document.title = 'Catálogo | Ellel Oversize';
+        if (heroEl) {
+            heroEl.style.backgroundImage = 'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)';
+        }
     }
 }
 

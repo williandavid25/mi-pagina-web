@@ -56,15 +56,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         const gridContainer = document.getElementById('product-grid-container');
         if (gridContainer) {
             gridContainer.innerHTML = ProductGrid(productos);
-            console.log('Catálogo inyectado en el DOM correctamente.');
+            console.log('Catálogo inyectado: ', productos.length, 'ítems.');
             
             // Setup buttons generated dynamically
             setupQuickAddParams();
             
             // Animate cards now that they exist in the DOM
             animateProductCards();
-        } else {
-            console.error('No se encontró el contenedor #product-grid-container en el HTML.');
         }
     } catch (error) {
         console.error('CRÍTICO: Fallo al cargar o renderizar el catálogo:', error);
