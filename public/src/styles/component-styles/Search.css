@@ -52,7 +52,7 @@
     border: none;
     outline: none;
     font-size: 1rem;
-    font-family: 'Outfit', sans-serif;
+    font-family: var(--font-body);
     color: #111;
     background: transparent;
 }
@@ -82,7 +82,7 @@
 
 /* ── Category label ── */
 .search-category-label {
-    font-family: 'Montserrat', sans-serif;
+    font-family: var(--font-body);
     font-weight: 900;
     font-size: 0.72rem;
     text-transform: uppercase;

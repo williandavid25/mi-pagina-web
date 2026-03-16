@@ -209,7 +209,7 @@ button, input, select, textarea {
 
 /* Title — large, white, bold */
 .video-hero__title {
-    font-family: 'Montserrat', sans-serif;
+    font-family: var(--font-body);
     font-weight: 900;
     font-size: clamp(3rem, 8vw, 7rem);
     line-height: 1;
@@ -247,7 +247,7 @@ button, input, select, textarea {
 .btn-white {
     background: #fff;
     color: #000;
-    font-family: 'Montserrat', sans-serif;
+    font-family: var(--font-body);
     font-weight: 900;
     border: none;
     padding: 0.9rem 2.2rem;

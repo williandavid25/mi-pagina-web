@@ -19,7 +19,7 @@
     border-radius: 30px;
     background-color: var(--purple-main);
     color: #ffffff;
-    font-family: 'Montserrat', sans-serif;
+    font-family: var(--font-body);
     font-weight: 800;
     text-transform: uppercase;
     text-decoration: none;

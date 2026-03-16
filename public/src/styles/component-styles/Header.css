@@ -108,7 +108,7 @@
 }
 
 .logo-text {
-    font-family: 'Playfair Display', serif;
+    font-family: var(--font-heading);
     font-weight: 900;
     font-size: 1.3rem; /* Reduced to emphasize the logo image more */
     color: #1a1a1a;
