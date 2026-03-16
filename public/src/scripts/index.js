@@ -200,15 +200,6 @@ function setupAuthInteractions() {
         }
     });
 
-    // ── Google Sign-In ────────────────────────────────────────────
-    if (window.google?.accounts?.id) {
-        initGoogleAuth();
-    } else {
-        window.addEventListener('load', () => {
-            if (window.google?.accounts?.id) initGoogleAuth();
-            else setTimeout(() => { if (window.google?.accounts?.id) initGoogleAuth(); }, 1500);
-        });
-    }
 }
 
 function setupUIInteractions() {

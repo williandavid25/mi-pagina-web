@@ -336,12 +336,15 @@ function setupMenuInteractions() {
         });
     }
 
-    // Search button
-    const searchBtn = document.querySelector('.search-btn');
+    // Search button (professional modal)
+    const searchBtn = document.getElementById('header-search-btn');
     if (searchBtn) {
         searchBtn.addEventListener('click', () => {
-            const query = prompt('¿Qué estás buscando?');
-            if (query) alert(`Buscando "${query}"...`);
+            if (typeof openSearchModal === 'function') {
+                openSearchModal();
+            } else {
+                console.warn('Search modal not yet initialized');
+            }
         });
     }
 

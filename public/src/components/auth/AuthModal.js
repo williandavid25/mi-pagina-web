@@ -42,7 +42,7 @@ export const AuthModal = () => `
             <!-- Google Sign-In: ONE container. JS will render GIS button here, OR show fallback if GIS fails -->
             <div class="auth-google-wrapper" id="auth-google-wrapper">
                 <!-- GIS renders its button inside this div -->
-                <div id="google-signin-btn"></div>
+                <div id="buttonDiv"></div>
                 <!-- Fallback shown ONLY if GIS fails (hidden by default) -->
                 <button class="auth-google-fallback" id="auth-google-fallback" type="button" style="display:none;">
                     <svg width="20" height="20" viewBox="0 0 48 48">

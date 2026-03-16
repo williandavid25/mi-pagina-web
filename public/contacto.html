@@ -28,7 +28,6 @@
     <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
 </head>
 <body class="bg-light-gray">
-    <canvas id="particle-canvas"></canvas>
     <!-- El fondo gris muy claro se define en base.css o en línea para esta página -->
     <style>
         body.bg-light-gray { background-color: #f8f8f8; }
@@ -165,10 +164,8 @@
     </div>
 
     <!-- Scripts: defer libera el Critical Rendering Path -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
-    <script src="./src/scripts/antigravity-engine.js" defer></script>
     <script type="module" src="./src/scripts/index.js"></script>
     
     <!-- Contact Form Logic -->

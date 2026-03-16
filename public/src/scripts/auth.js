@@ -8,7 +8,7 @@
  * después de abrir el modal, garantizando offsetWidth > 0.
  */
 
-export const GOOGLE_CLIENT_ID = '440096429908-li0naluh0idbvqo3rn8hhbma55nm0i75.apps.googleusercontent.com';
+export const GOOGLE_CLIENT_ID = '440096429908-e4qq2jvumgko1tfl9sp331i6q1nisbrn.apps.googleusercontent.com';
 
 // ── Auth State ──────────────────────────────────────────────────
 let currentUser = null;
@@ -138,7 +138,7 @@ export function updateHeaderAuthUI(user) {
 // ── Render Google Button (corregido: espera a que el contenedor tenga ancho real) ──
 function renderGoogleButton() {
     if (!window.google?.accounts?.id || currentUser) return;
-    const container = document.getElementById('google-signin-btn');
+    const container = document.getElementById('buttonDiv');
     if (!container) return;
 
     // requestAnimationFrame garantiza que el modal ya está visible en pantalla
@@ -163,8 +163,14 @@ function renderGoogleButton() {
     });
 }
 
+// Flag to prevent multiple initializations
+let googleAuthInitialized = false;
+
 // ── Initialize Google Identity Services ─────────────────────────
 export function initGoogleAuth() {
+    if (googleAuthInitialized) return;
+    googleAuthInitialized = true;
+    
     loadUser();
 
     if (!window.google?.accounts?.id) {
@@ -172,6 +178,8 @@ export function initGoogleAuth() {
         const fallback = document.getElementById('auth-google-fallback');
         if (fallback) fallback.style.display = 'flex';
         onAuthChange(currentUser);
+        // Reset if failed so it can try again
+        googleAuthInitialized = false; 
         return;
     }
 
@@ -194,7 +202,7 @@ export function openAuthModal() {
     modal.classList.add('active');
 
     // Esperar que la transición CSS del modal termine (~300ms)
-    // para que el contenedor google-signin-btn tenga offsetWidth > 0.
+    // para que el contenedor buttonDiv tenga offsetWidth > 0.
     setTimeout(() => {
         if (window.google?.accounts?.id) {
             renderGoogleButton();
