@@ -474,13 +474,13 @@
                         <a href="privacidad.html">Términos y políticas</a>
                     </div>
                     <div class="footer-socials">
-                        <a href="https://www.facebook.com" class="social-btn" aria-label="Facebook" target="_blank">
+                        <a href="https://www.facebook.com/profile.php?id=100079452624818" class="social-btn" aria-label="Facebook" target="_blank">
                             <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
                         </a>
-                        <a href="https://www.instagram.com" class="social-btn" aria-label="Instagram" target="_blank">
+                        <a href="https://www.instagram.com/ellel_ecuador?igsh=MWJ1c25tdTB0ZG5xOA==" class="social-btn" aria-label="Instagram" target="_blank">
                             <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
                         </a>
-                        <a href="https://www.tiktok.com" class="social-btn" aria-label="TikTok" target="_blank">
+                        <a href="https://www.tiktok.com/@ushina1?_r=1&_t=ZS-94kTcNRnDEd" class="social-btn" aria-label="TikTok" target="_blank">
                             <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5v3a3 3 0 0 1-3-3v11a4 4 0 1 1-6-4z"></path></svg>
                         </a>
                     </div>
@@ -506,19 +506,8 @@
             <ul class="main-menu-list">
                 <li><a href="index.html" class="mobile-link">INICIO</a></li>
                 <li><a href="catalogo.html?genero=hombre" class="mobile-link">HOMBRE</a></li>
-                <li><a href="catalogo.html?genero=mujer" class="mobile-link">MUJER</a></li>
-                <li><a href="catalogo.html" class="mobile-link">CATÁLOGO</a></li>
-                <li><a href="nosotros.html" class="mobile-link">NOSOTROS</a></li>
-                <li><a href="contacto.html" class="mobile-link">CONTACTO</a></li>
-                <li><a href="privacidad.html" class="mobile-link">PRIVACIDAD</a></li>
-            </ul>
-        </nav>
-    </div>
-
-    <!-- WhatsApp -->
-    <a href="https://wa.me/123456789" class="whatsapp-float premium-shadow" aria-label="WhatsApp" target="_blank">
-        <svg viewBox="0 0 24 24"><path d="M12.03 2.5a9.5 9.5 0 106.84 16.03l2.84.95-.97-2.77A9.5 9.5 0 0012.03 2.5zm0 17.1a7.6 7.6 0 01-3.87-1.05l-.28-.16-2.12.72.73-2.07-.18-.28A7.6 7.6 0 1112.03 19.6zm4.18-5.71c-.23-.12-1.36-.67-1.57-.75-.21-.08-.36-.12-.52.12-.15.24-.59.75-.72.9-.13.15-.26.17-.49.05a6.25 6.25 0 01-1.84-1.13 6.9 6.9 0 01-1.27-1.58c-.13-.22-.01-.34.1-.45.11-.1.23-.27.35-.4.12-.14.16-.24.24-.4.07-.16.04-.3-.02-.41-.06-.11-.52-1.25-.71-1.71-.19-.45-.38-.39-.52-.4-.14-.01-.3-.01-.46-.01-.16 0-.42.06-.64.3s-.84.82-.84 2a5.75 5.75 0 001.2 3.05c.15.2 2.08 3.18 5.04 4.46.7.3 1.25.48 1.68.61.7.22 1.34.19 1.85.11.57-.08 1.76-.72 2.01-1.42.25-.7.25-1.3.17-1.42-.08-.12-.3-.19-.53-.3z"/></svg>
-    </a>
+    <div id="wishlist-container"></div>
+    <div id="search-container"></div>
 
     <!-- Scripts: defer libera el Critical Rendering Path -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
@@ -528,6 +517,8 @@
         import { CheckoutModal } from './src/components/forms/CheckoutForm.js';
         import { initCart } from './src/scripts/cartState.js';
         import { initWishlist, openWishlist } from './src/scripts/wishlistState.js';
+        import { AuthModal } from './src/components/auth/AuthModal.js';
+        import { initGoogleAuth } from './src/scripts/auth.js';
 
         document.addEventListener('DOMContentLoaded', () => {
             // UI Components
@@ -537,9 +528,14 @@
             if (wishlistContainer) wishlistContainer.innerHTML = WishlistDrawer();
             const checkoutContainer = document.getElementById('checkout-container');
             if (checkoutContainer) checkoutContainer.innerHTML = CheckoutModal();
+
+            // Inject Auth Modal
+            const authContainer = document.getElementById('auth-container');
+            if (authContainer) authContainer.innerHTML = AuthModal();
             
             initCart();
             initWishlist();
+            initGoogleAuth();
 
             // Mobile menu
             const menuBtn = document.getElementById('open-menu-btn');

@@ -37,8 +37,8 @@
 .product-card.is-clicked {
     z-index: 1000 !important;
     transform: scale(1.05) translateY(-5px) !important;
-    box-shadow: 0 30px 60px rgba(254, 189, 1, 0.4) !important; /* Brand Yellow Glow */
-    border-color: var(--color-accent-yellow) !important;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2) !important; /* Monochrome Glow */
+    border-color: #000 !important;
     transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1) !important;
 }
 

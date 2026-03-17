@@ -125,28 +125,47 @@ button, input, select, textarea {
     position: fixed;
     bottom: 30px;
     right: 30px;
-    width: 65px;
-    height: 65px;
-    background-color: var(--color-accent-green);
-    color: white;
+    width: 60px;
+    height: 60px;
+    background: rgba(37, 211, 102, 0.15); /* Glassmorphism base */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: #25D366;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 1000;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4);
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    box-shadow: 0 8px 32px rgba(37, 211, 102, 0.2);
+    border: 1px solid rgba(37, 211, 102, 0.3);
+    animation: pulse-emerald 2s infinite, float-wa 4s ease-in-out infinite;
 }
 
 .whatsapp-float:hover {
-    transform: scale(1.15) rotate(-5deg);
-    background-color: #20b858;
+    transform: scale(1.1) translateY(-5px);
+    background: rgba(37, 211, 102, 0.25);
+    color: #fff;
+    box-shadow: 0 12px 40px rgba(37, 211, 102, 0.4);
+    border-color: rgba(255, 255, 255, 0.5);
 }
 
 .whatsapp-float svg {
-    width: 35px;
-    height: 35px;
+    width: 30px;
+    height: 30px;
     fill: currentColor;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+@keyframes pulse-emerald {
+    0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.5); }
+    70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+}
+
+@keyframes float-wa {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
 }
 
 /* Animations */

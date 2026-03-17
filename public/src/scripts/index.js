@@ -37,6 +37,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     setupUIInteractions();
     setupAuthInteractions();
     initSearch(); // Live product search
+    if (typeof initGoogleAuth === 'function') initGoogleAuth();
     
     // 3. Iniciar el Carrusel
     setupCarousel();
@@ -340,33 +341,9 @@ function setupUIInteractions() {
     // Interactive 360 Logo Rotation
     setupLogoRotation();
 
-    // Heart Icon Click Handling (Event Delegation for dynamic cards)
-    document.addEventListener('click', (e) => {
-        const heartBtn = e.target.closest('.heart-icon-btn');
-        if (heartBtn) {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            const card = heartBtn.closest('.product-card');
-            if (card) {
-                const id = heartBtn.dataset.id;
-                const name = card.querySelector('.product-title')?.textContent || 'Producto';
-                const priceStr = card.querySelector('.product-price')?.textContent || '0';
-                const price = parseFloat(priceStr.replace(/[^0-9.-]+/g,""));
-                const img = card.querySelector('.product-img')?.src;
-                
-                toggleWishlist({ id, name, price, img });
-            }
-        }
-    });
 
-    // Wishlist Toggle Buttons (Header)
-    document.querySelectorAll('.wishlist-btn-toggle').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            openWishlist();
-        });
-    });
+
+
 }
 
 /**

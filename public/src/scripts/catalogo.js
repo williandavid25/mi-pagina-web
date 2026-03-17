@@ -11,27 +11,26 @@ import { WishlistDrawer } from '../components/wishlist/WishlistDrawer.js';
 import { initWishlist, toggleWishlist, openWishlist } from './wishlistState.js';
 import { initProductClickAnimations } from './animations.js';
 import { initSearch } from './search.js';
+import { AuthModal } from '../components/auth/AuthModal.js';
+import { initGoogleAuth, openAuthModal, closeAuthModal, signOut, updateCartAuthUI, updateHeaderAuthUI, getUser } from './auth.js';
 
 // -------------------------------
 // Config maps for display labels
 // -------------------------------
 const CATEGORIA_META = {
-    buzos:      { label: 'Buzos & Sudaderas', heroTitle: 'BUZOS &<br><span class="text-yellow">SUDADERAS</span>', sub: 'Oversize con 300GSM · La comodidad que defines.', banner: './public/src/assets/img/banners/banner-hoodie-negro.jpg' },
-    camisetas:  { label: 'Camisetas', heroTitle: 'CAMI<span class="text-yellow">SETAS</span>', sub: 'Corte relajado · Tejidos premium.', banner: './public/src/assets/img/banners/banner-hoodie-marfil.jpg' },
-    conjuntos:  { label: 'Conjuntos', heroTitle: 'CON<span class="text-yellow">JUNTOS</span>', sub: 'El look completo en un solo movimiento.', banner: './public/src/assets/img/banners/banner-hoodie-azulelectrico.jpg' },
-    pantalones: { label: 'Pantalones', heroTitle: 'PANTA<span class="text-yellow">LONES</span>', sub: 'Cargo, wide-leg y relaxed fit.', banner: './public/src/assets/img/banners/1773289479333.png' },
+    buzos:      { label: 'Buzos & Sudaderas', heroTitle: 'BUZOS &<br><span class="text-yellow">SUDADERAS</span>', sub: 'Oversize con 300GSM · La comodidad que defines.', banner: './src/assets/img/banners/banner-hoodie-negro.jpg' },
+    camisetas:  { label: 'Camisetas', heroTitle: 'CAMI<span class="text-yellow">SETAS</span>', sub: 'Corte relajado · Tejidos premium.', banner: './src/assets/img/banners/banner-hoodie-marfil.jpg' },
+    conjuntos:  { label: 'Conjuntos', heroTitle: 'CON<span class="text-yellow">JUNTOS</span>', sub: 'El look completo en un solo movimiento.', banner: './src/assets/img/banners/banner-hoodie-azulelectrico.jpg' },
+    pantalones: { label: 'Pantalones', heroTitle: 'PANTA<span class="text-yellow">LONES</span>', sub: 'Cargo, wide-leg y relaxed fit.', banner: './src/assets/img/banners/1773289479333.png' },
 };
 
 const GENERO_META = {
-    hombre: { label: 'Hombre', heroTitle: 'COLECCIÓN<br><span class="text-yellow">HOMBRE</span>', sub: 'Streetwear urban para él.', banner: './public/src/assets/img/banners/1773289601640.png' },
-    mujer:  { label: 'Mujer',  heroTitle: 'COLECCIÓN<br><span class="text-yellow">MUJER</span>',  sub: 'Estilo oversize para ella.', banner: './public/src/assets/img/banners/1773290080697.png' },
+    hombre: { label: 'Hombre', heroTitle: 'COLECCIÓN<br><span class="text-yellow">HOMBRE</span>', sub: 'Streetwear urban para él.', banner: './src/assets/img/banners/1773289601640.png' },
+    mujer:  { label: 'Mujer',  heroTitle: 'COLECCIÓN<br><span class="text-yellow">MUJER</span>',  sub: 'Estilo oversize para ella.', banner: './src/assets/img/banners/1773290080697.png' },
 };
 
 const ALL_CATEGORIAS = Object.keys(CATEGORIA_META);
 
-// -------------------------------
-// App entry point
-// -------------------------------
 document.addEventListener('DOMContentLoaded', async () => {
     // Inject cart & checkout modals
     const cartContainer = document.getElementById('cart-container');
@@ -42,10 +41,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     const wishlistContainer = document.getElementById('wishlist-container');
     if (wishlistContainer) wishlistContainer.innerHTML = WishlistDrawer();
 
+    // Inject Auth Modal
+    const authContainer = document.getElementById('auth-container');
+    if (authContainer) authContainer.innerHTML = AuthModal();
+
     initCart();
     initWishlist();
     initProductClickAnimations();
     initSearch();
+    
+    initGoogleAuth();
+    setupAuthInteractions();
     setupMenuInteractions();
 
     // Parse URL params
@@ -53,6 +59,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const categoriaParam = params.get('categoria')?.toLowerCase() || null;
     const generoParam    = params.get('genero')?.toLowerCase()    || null;
     const ofertaParam    = params.get('oferta') === 'true';
+
+    // Apply HERO update ASAP to avoid flickering
+    updateHero(categoriaParam, generoParam);
 
     // Fetch all products
     let allProducts = [];
@@ -62,30 +71,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         allProducts = await res.json();
     } catch (e) {
         console.error('Error cargando productos:', e);
-        document.getElementById('catalog-grid-container').innerHTML =
-            '<p style="text-align:center;padding:3rem;color:#999;">No se pudieron cargar los productos.</p>';
+        const grid = document.getElementById('catalog-grid-container');
+        if (grid) grid.innerHTML = '<p style="text-align:center;padding:3rem;color:#999;">No se pudieron cargar los productos.</p>';
         return;
     }
 
-    // Apply initial filter based on URL param
-    updateHero(categoriaParam, generoParam);
+    // Apply initial filter
     buildFilterChips(allProducts, categoriaParam, generoParam);
     renderProducts(applyFilters(allProducts, categoriaParam, generoParam, 'default', ofertaParam));
 
     // Sort handler
-    document.getElementById('sort-select').addEventListener('change', (e) => {
+    document.getElementById('sort-select')?.addEventListener('change', (e) => {
         const activeChip = document.querySelector('.chip.active');
         const activeCat = activeChip ? activeChip.dataset.cat || null : null;
         const activeGen = activeChip ? activeChip.dataset.gen || null : null;
         renderProducts(applyFilters(allProducts, activeCat, activeGen, e.target.value));
-    });
-
-    // Scroll-triggered header
-    window.addEventListener('scroll', () => {
-        const header = document.getElementById('main-header');
-        if (window.scrollY > 80) {
-            header.classList.add('scrolled');
-        }
     });
 });
 
@@ -348,31 +348,52 @@ function setupMenuInteractions() {
         });
     }
 
-    // Wishlist Event Delegation
+}
+
+function setupAuthInteractions() {
     document.addEventListener('click', (e) => {
-        const heartBtn = e.target.closest('.heart-icon-btn');
-        if (heartBtn) {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            const card = heartBtn.closest('.product-card');
-            if (card) {
-                const id = heartBtn.dataset.id;
-                const name = card.querySelector('.product-title')?.textContent || 'Producto';
-                const priceStr = card.querySelector('.product-price')?.textContent || '0';
-                const price = parseFloat(priceStr.replace(/[^0-9.-]+/g,""));
-                const img = card.querySelector('.product-img')?.src;
-                
-                toggleWishlist({ id, name, price, img });
-            }
+        if (
+            e.target.closest('#cart-login-banner') ||
+            e.target.closest('#cart-login-banner-filled') ||
+            e.target.id === 'cart-login-trigger' ||
+            e.target.closest('#header-login-btn')
+        ) {
+            openAuthModal();
+        }
+        if (e.target.closest('#cart-signout-btn')) signOut();
+        if (e.target.closest('#auth-close-btn') || e.target.id === 'auth-modal-overlay') closeAuthModal();
+        if (e.target.closest('#header-user-avatar')) {
+            if (confirm('¿Cerrar sesión?')) signOut();
         }
     });
 
-    // Header Wishlist Button
-    document.querySelectorAll('.wishlist-btn-toggle').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            openWishlist();
-        });
+    // Handle Auth Modal Submission (Email Simulation)
+    document.addEventListener('submit', async (e) => {
+        if (!e.target.matches('#auth-email-form')) return;
+        e.preventDefault();
+        
+        const email = document.getElementById('auth-email').value;
+        const submitBtn = e.target.querySelector('.auth-submit-btn');
+        const originalText = submitBtn.textContent;
+        
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'PROCESANDO...';
+        
+        try {
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            // Simulate login
+            const userData = {
+                name: email.split('@')[0],
+                email: email,
+                picture: `https://ui-avatars.com/api/?name=${email}&background=random`
+            };
+            localStorage.setItem('ellel_user', JSON.stringify(userData));
+            window.location.reload();
+        } catch (error) {
+            console.error('Auth error:', error);
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+        }
     });
 }
+

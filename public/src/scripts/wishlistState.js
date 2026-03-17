@@ -24,24 +24,50 @@ export function initWishlist() {
     
     renderWishlist();
 
-    // Bind drawer events
+    // Bind drawer events (using delegation for robustness)
     const wishlistOverlay = document.getElementById('wishlist-overlay');
-    const closeBtn = document.getElementById('close-wishlist-btn');
-    const exploreBtn = document.getElementById('btn-explore-wishlist');
     
-    if (closeBtn && wishlistOverlay) {
-        closeBtn.addEventListener('click', () => closeWishlist());
-    }
-    if (exploreBtn) {
-        exploreBtn.addEventListener('click', () => {
+    document.addEventListener('click', (event) => {
+        const closeBtn = event.target.closest('#close-wishlist-btn');
+        const overlay = event.target.closest('.wishlist-overlay');
+        const exploreBtn = event.target.closest('#btn-explore-wishlist');
+
+        if (closeBtn || (overlay && event.target === overlay)) {
+            closeWishlist();
+            console.log('Wishlist cerrada correctamente');
+        }
+
+        if (exploreBtn) {
             closeWishlist();
             window.location.href = 'catalogo.html';
-        });
-    }
+        }
+    });
 
-    // Bind global toggle buttons
-    document.querySelectorAll('.wishlist-btn-toggle').forEach(btn => {
-        btn.addEventListener('click', () => openWishlist());
+    // Bind global toggle buttons (delegation)
+    document.addEventListener('click', (e) => {
+        if (e.target.closest('.wishlist-btn-toggle')) {
+            openWishlist();
+        }
+    });
+
+    // Heart Icon Click Handling (Global Delegation)
+    document.addEventListener('click', (e) => {
+        const heartBtn = e.target.closest('.heart-icon-btn');
+        if (heartBtn) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const card = heartBtn.closest('.product-card');
+            if (card) {
+                const id = heartBtn.dataset.id;
+                const name = card.querySelector('.product-title')?.textContent || 'Producto';
+                const priceStr = card.querySelector('.product-price')?.textContent || '0';
+                const price = parseFloat(priceStr.replace(/[^0-9.-]+/g,""));
+                const img = card.querySelector('.product-img')?.src;
+                
+                toggleWishlist({ id, name, price, img });
+            }
+        }
     });
 }
 

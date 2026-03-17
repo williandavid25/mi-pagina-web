@@ -172,7 +172,7 @@ body.home-page .header:not(.scrolled) .logo-underline {
     left: 0;
     width: 0;
     height: 2px;
-    background: var(--color-accent-purple);
+    background: var(--color-text-main);
     transition: width 0.3s ease;
 }
 
@@ -269,6 +269,7 @@ body.home-page .header:not(.scrolled) .logo-underline {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    border-radius: 50%; /* Ensure official circular shape */
 }
 
 .icon-svg {
@@ -296,10 +297,10 @@ body.home-page .header:not(.scrolled) .logo-underline {
 }
 
 .icon-btn:hover {
-    background: var(--color-accent-purple);
+    background: #000;
     color: white;
     transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(111,62,205,0.3);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 
 .cart-badge {
@@ -313,7 +314,7 @@ body.home-page .header:not(.scrolled) .logo-underline {
     border-radius: 999px; /* Pill shape if count grows */
     display: flex; align-items: center; justify-content: center;
     border: 2px solid #fff; /* White ring for contrast against purple icon hover */
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     z-index: 10;
     pointer-events: none;
 }
@@ -516,7 +517,7 @@ body.home-page .header:not(.scrolled) .logo-underline {
     width: 44px;
     height: 44px;
     border-radius: 50%;
-    background: rgba(111, 62, 205, 0.1);
+    background: rgba(0, 0, 0, 0.05);
     border: none;
     position: relative;
     cursor: pointer;
@@ -544,7 +545,7 @@ body.home-page .header:not(.scrolled) .logo-underline {
 }
 
 .menu-close-btn:hover {
-    background: var(--color-accent-purple);
+    background: #000;
     transform: rotate(90deg) scale(1.1);
 }
 
