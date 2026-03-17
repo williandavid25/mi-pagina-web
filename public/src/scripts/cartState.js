@@ -1,7 +1,4 @@
-/**
- * Global Cart State Management
- * Handles adding/removing items, localStorage, and rendering the MiniCart contents.
- */
+import HistoryManager from './HistoryManager.js';
 
 let cartItems = [];
 let isCartInitialized = false;
@@ -44,14 +41,20 @@ function saveCart() {
 
 export function openCart() {
     const overlay = document.getElementById('cart-overlay');
-    if (overlay) overlay.classList.add('active');
+    if (overlay) {
+        overlay.classList.add('active');
+        HistoryManager.pushState('cart', closeCart);
+    }
     document.body.classList.add('cart-open');
     renderCart();
 }
 
-export function closeCart() {
+export function closeCart(isHistoryBack = false) {
     const overlay = document.getElementById('cart-overlay');
-    if (overlay) overlay.classList.remove('active');
+    if (overlay) {
+        overlay.classList.remove('active');
+        if (!isHistoryBack) HistoryManager.closeManual('cart');
+    }
     document.body.classList.remove('cart-open');
 }
 

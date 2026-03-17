@@ -1,3 +1,5 @@
+import HistoryManager from './HistoryManager.js';
+
 /**
  * search.js — Live product search engine
  * Fetches productos.json once, caches it, and filters by keyword
@@ -87,15 +89,19 @@ function openSearchModal() {
     const overlay = document.getElementById('search-modal-overlay');
     if (overlay) {
         overlay.classList.add('active');
+        HistoryManager.pushState('search', closeSearchModal);
         const input = document.getElementById('search-input');
         if (input) { input.focus(); input.value = ''; }
         renderResults([], '');
     }
 }
 
-function closeSearchModal() {
+function closeSearchModal(isHistoryBack = false) {
     const overlay = document.getElementById('search-modal-overlay');
-    if (overlay) overlay.classList.remove('active');
+    if (overlay) {
+        overlay.classList.remove('active');
+        if (!isHistoryBack) HistoryManager.closeManual('search');
+    }
 }
 
 // ── Init ──────────────────────────────────────────────────────

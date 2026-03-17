@@ -54,6 +54,20 @@
 
         .about-page { min-height: 100vh; padding-top: 100px; }
 
+        /* Safety hide for overlays - Forced reset */
+        .mini-cart-overlay, .wishlist-overlay, .checkout-overlay, .auth-modal-overlay, .search-modal-overlay {
+            display: none !important;
+        }
+
+        /* Essential show classes */
+        .mini-cart-overlay.active, 
+        .wishlist-overlay.active, 
+        .checkout-overlay.active, 
+        .auth-modal-overlay.active, 
+        .search-modal-overlay.active {
+            display: flex !important;
+        }
+
 
 
         .hero-cta {
@@ -287,51 +301,6 @@
             box-shadow: 0 6px 20px rgba(254,189,1,0.4);
         }
 
-        /* ===================== FOOTER ===================== */
-        .simple-footer {
-            text-align: center;
-            padding: 2rem 1rem;
-            border-top: 1px solid rgba(0,0,0,0.08);
-            margin-top: 2rem;
-        }
-
-        .simple-footer-links {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: clamp(0.8rem, 3vw, 2rem);
-            margin-bottom: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .simple-footer-links a {
-            font-size: 0.82rem;
-            font-weight: 600;
-            color: #555;
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-
-        .simple-footer-links a:hover { color: #000; }
-
-        .footer-socials {
-            display: flex;
-            justify-content: center;
-            gap: 1.2rem;
-            margin-bottom: 1rem;
-        }
-
-        .footer-socials a {
-            width: 38px; height: 38px;
-            display: flex; align-items: center; justify-content: center;
-            border-radius: 50%;
-            background: rgba(0,0,0,0.07);
-            color: #000;
-            transition: background 0.2s, transform 0.2s;
-        }
-
-        .footer-socials a:hover { background: rgba(0,0,0,0.15); transform: scale(1.1); }
-
         .footer-copy { font-size: 0.76rem; color: #aaa; }
     </style>
     <link rel="stylesheet" href="./src/styles/component-styles/Search.css">
@@ -340,7 +309,7 @@
     <div id="app">
 
         <!-- Header -->
-        <header id="main-header" class="header scrolled">
+        <header id="main-header" class="header">
             <div class="header-container container">
                 <a href="index.html" class="logo-link">
                     <img src="./src/assets/img/logo-square.png" alt="Ellel Oversize Logo">
@@ -410,32 +379,44 @@
                 <!-- Values: 2 cols mobile, 3 cols desktop -->
                 <div class="values-grid" id="values-grid">
                     <div class="value-card">
-                        <span class="value-icon">🎯</span>
+                        <span class="value-icon">
+                            <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                        </span>
                         <div class="value-title">Calidad Premium</div>
                         <div class="value-desc">Algodón peinado de 300GSM para la caída perfecta y durabilidad.</div>
                     </div>
                     <div class="value-card">
-                        <span class="value-icon">🌆</span>
+                        <span class="value-icon">
+                            <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg>
+                        </span>
                         <div class="value-title">Estilo Urbano</div>
                         <div class="value-desc">Cortes oversize exclusivos que definen la cultura streetwear.</div>
                     </div>
                     <div class="value-card">
-                        <span class="value-icon">♻️</span>
+                        <span class="value-icon">
+                            <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                        </span>
                         <div class="value-title">Compromiso</div>
                         <div class="value-desc">Producción responsable y enfoque en la satisfacción del cliente.</div>
                     </div>
                     <div class="value-card">
-                        <span class="value-icon">🚀</span>
+                        <span class="value-icon">
+                            <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polyline></svg>
+                        </span>
                         <div class="value-title">Innovación</div>
                         <div class="value-desc">Nuevas siluetas, colores y texturas cada temporada.</div>
                     </div>
                     <div class="value-card">
-                        <span class="value-icon">💜</span>
+                        <span class="value-icon">
+                            <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                        </span>
                         <div class="value-title">Comunidad</div>
                         <div class="value-desc">Nuestros clientes son familia. Su satisfacción es nuestro motor.</div>
                     </div>
                     <div class="value-card">
-                        <span class="value-icon">📦</span>
+                        <span class="value-icon">
+                            <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                        </span>
                         <div class="value-title">Envío Rápido</div>
                         <div class="value-desc">Tu pedido enviado en tiempo récord para disfrutarlo cuanto antes.</div>
                     </div>
@@ -486,15 +467,8 @@
                     </div>
                 </div>
             </footer>
-
         </div>
     </div>
-
-    <!-- Modals -->
-    <div id="cart-container"></div>
-    <div id="checkout-container"></div>
-    <div id="auth-container"></div>
-    <div id="wishlist-container"></div>
 
     <!-- Mobile Menu -->
     <div class="mobile-menu-overlay" id="mobile-menu">
@@ -506,6 +480,18 @@
             <ul class="main-menu-list">
                 <li><a href="index.html" class="mobile-link">INICIO</a></li>
                 <li><a href="catalogo.html?genero=hombre" class="mobile-link">HOMBRE</a></li>
+                <li><a href="catalogo.html?genero=mujer" class="mobile-link">MUJER</a></li>
+                <li><a href="catalogo.html" class="mobile-link">CATÁLOGO</a></li>
+                <li><a href="contacto.html" class="mobile-link">CONTACTO</a></li>
+                <li><a href="nosotros.html" class="mobile-link active">NOSOTROS</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Modals -->
+    <div id="cart-container"></div>
+    <div id="checkout-container"></div>
+    <div id="auth-container"></div>
     <div id="wishlist-container"></div>
     <div id="search-container"></div>
 
@@ -519,6 +505,7 @@
         import { initWishlist, openWishlist } from './src/scripts/wishlistState.js';
         import { AuthModal } from './src/components/auth/AuthModal.js';
         import { initGoogleAuth } from './src/scripts/auth.js';
+        import { initSearch } from './src/scripts/search.js';
 
         document.addEventListener('DOMContentLoaded', () => {
             // UI Components
@@ -536,6 +523,7 @@
             initCart();
             initWishlist();
             initGoogleAuth();
+            initSearch();
 
             // Mobile menu
             const menuBtn = document.getElementById('open-menu-btn');

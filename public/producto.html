@@ -21,6 +21,21 @@
     <link rel="stylesheet" href="./src/styles/mobile.css">
     <link rel="stylesheet" href="./src/styles/component-styles/Wishlist.css">
     <link rel="stylesheet" href="./src/styles/component-styles/Search.css">
+    <style>
+        /* Safety hide for overlays - Forced reset */
+        .mini-cart-overlay, .wishlist-overlay, .checkout-overlay, .auth-modal-overlay, .search-modal-overlay {
+            display: none !important;
+        }
+
+        /* Essential show classes */
+        .mini-cart-overlay.active, 
+        .wishlist-overlay.active, 
+        .checkout-overlay.active, 
+        .auth-modal-overlay.active, 
+        .search-modal-overlay.active {
+            display: flex !important;
+        }
+    </style>
 </head>
 <body>
     <div id="app">
@@ -64,7 +79,7 @@
                     <button id="header-user-avatar" class="header-avatar-btn" aria-label="Mi cuenta" title="Cerrar sesión" style="display:none;">
                         <img src="" alt="Avatar">
                     </button>
-                    <button class="icon-btn wishlist-btn-toggle" aria-label="Favoritos" style="position: relative;">
+                    <button class="icon-btn wishlist-btn-toggle" aria-label="Favoritos" id="header-wishlist-btn" style="position: relative;">
                         <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.72-8.72 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
                         <span class="wishlist-badge" style="display: none;">0</span>
                     </button>
@@ -177,14 +192,7 @@
                     </a>
                 </div>
             </div>
-        </footer>
-    </div>
-
-    <!-- Modals & Overlays -->
-    <div id="cart-container"></div>
-    <div id="checkout-container"></div>
-    <div id="auth-container"></div>
-    <div id="wishlist-container"></div>
+    </footer>
 
     <!-- Mobile Menu Slide-out -->
     <div class="mobile-menu-overlay" id="mobile-menu">

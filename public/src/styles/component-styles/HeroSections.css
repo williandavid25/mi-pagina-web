@@ -80,7 +80,7 @@
 
 .hero-content h1 span,
 .hero-content h1 .text-yellow {
-    color: #ffcc00;
+    color: var(--color-accent-yellow);
     display: inline-block;
 }
 

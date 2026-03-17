@@ -1,3 +1,5 @@
+import HistoryManager from './HistoryManager.js';
+
 /**
  * Global Wishlist State Management
  */
@@ -34,7 +36,6 @@ export function initWishlist() {
 
         if (closeBtn || (overlay && event.target === overlay)) {
             closeWishlist();
-            console.log('Wishlist cerrada correctamente');
         }
 
         if (exploreBtn) {
@@ -77,14 +78,20 @@ function saveWishlist() {
 
 export function openWishlist() {
     const overlay = document.getElementById('wishlist-overlay');
-    if (overlay) overlay.classList.add('active');
+    if (overlay) {
+        overlay.classList.add('active');
+        HistoryManager.pushState('wishlist', closeWishlist);
+    }
     document.body.classList.add('wishlist-open');
     renderWishlist();
 }
 
-export function closeWishlist() {
+export function closeWishlist(isHistoryBack = false) {
     const overlay = document.getElementById('wishlist-overlay');
-    if (overlay) overlay.classList.remove('active');
+    if (overlay) {
+        overlay.classList.remove('active');
+        if (!isHistoryBack) HistoryManager.closeManual('wishlist');
+    }
     document.body.classList.remove('wishlist-open');
 }
 

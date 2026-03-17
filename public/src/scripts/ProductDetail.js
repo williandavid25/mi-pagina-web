@@ -10,12 +10,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Only run if we are on the product detail page
     if (!document.getElementById('pdp-main-img')) return;
     
-    // Inject wishlist drawer
-    const wishlistContainer = document.getElementById('wishlist-container');
-    if (wishlistContainer) wishlistContainer.innerHTML = WishlistDrawer();
-
-    initCart();
-    initWishlist();
+    // Components are now injected and initialized by index.js globally.
+    // pdp-specific logic starts below.
 
     // --- Dynamic Data Loading ---
     const urlParams = new URLSearchParams(window.location.search);

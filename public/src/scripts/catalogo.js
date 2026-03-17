@@ -3,6 +3,7 @@
  * Handles catalog page: reads URL params, fetches products, filters, sorts, and renders.
  */
 
+import HistoryManager from './HistoryManager.js';
 import { ProductCard } from '../components/product/ProductCard.js';
 import { MiniCart } from '../components/cart/MiniCart.js';
 import { CheckoutModal } from '../components/forms/CheckoutForm.js';
@@ -295,8 +296,14 @@ function setupMenuInteractions() {
     const closeMenuBtn = document.getElementById('close-menu-btn');
     const mobileMenu   = document.getElementById('mobile-menu');
 
-    if (menuBtn  && mobileMenu) menuBtn.addEventListener('click',  () => mobileMenu.classList.add('active'));
-    if (closeMenuBtn && mobileMenu) closeMenuBtn.addEventListener('click', () => mobileMenu.classList.remove('active'));
+    if (menuBtn  && mobileMenu) menuBtn.addEventListener('click',  () => {
+        mobileMenu.classList.add('active');
+        HistoryManager.pushState('menu', () => mobileMenu.classList.remove('active'));
+    });
+    if (closeMenuBtn && mobileMenu) closeMenuBtn.addEventListener('click', () => {
+        mobileMenu.classList.remove('active');
+        HistoryManager.closeManual('menu');
+    });
 
     const checkoutBtn       = document.getElementById('btn-checkout-whatsapp');
     const checkoutOverlay   = document.getElementById('checkout-overlay');
@@ -307,7 +314,10 @@ function setupMenuInteractions() {
         checkoutBtn.addEventListener('click', procesarCompraWhatsApp);
     }
     if (closeCheckoutBtn && checkoutOverlay) {
-        closeCheckoutBtn.addEventListener('click', () => checkoutOverlay.classList.remove('active'));
+        closeCheckoutBtn.addEventListener('click', () => {
+            checkoutOverlay.classList.remove('active');
+            HistoryManager.closeManual('checkout');
+        });
     }
 
     // Checkout form handler
@@ -326,6 +336,7 @@ function setupMenuInteractions() {
                 localStorage.removeItem('ellel_cart');
                 setTimeout(() => {
                     checkoutOverlay.classList.remove('active');
+                    HistoryManager.closeManual('checkout');
                     checkoutForm.reset();
                     submitBtn.textContent = originalText;
                     submitBtn.style.color = '';

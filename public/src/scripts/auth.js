@@ -1,3 +1,5 @@
+import HistoryManager from './HistoryManager.js';
+
 /**
  * auth.js — Google Sign-In using Google Identity Services (GIS)
  * ---------------------------------------------------------------
@@ -78,7 +80,10 @@ function onAuthChange(user) {
     updateCartAuthUI(user);
     updateHeaderAuthUI(user);
     const modal = document.getElementById('auth-modal-overlay');
-    if (modal && user) modal.classList.remove('active');
+    if (modal && user) {
+        modal.classList.remove('active');
+        HistoryManager.closeManual('auth');
+    }
     window.dispatchEvent(new CustomEvent('authChange', { detail: user }));
 }
 
@@ -200,6 +205,7 @@ export function openAuthModal() {
     const modal = document.getElementById('auth-modal-overlay');
     if (!modal) return;
     modal.classList.add('active');
+    HistoryManager.pushState('auth', closeAuthModal);
 
     // Esperar que la transición CSS del modal termine (~300ms)
     // para que el contenedor buttonDiv tenga offsetWidth > 0.
@@ -213,9 +219,12 @@ export function openAuthModal() {
     }, 320);
 }
 
-export function closeAuthModal() {
+export function closeAuthModal(isHistoryBack = false) {
     const modal = document.getElementById('auth-modal-overlay');
-    if (modal) modal.classList.remove('active');
+    if (modal) {
+        modal.classList.remove('active');
+        if (!isHistoryBack) HistoryManager.closeManual('auth');
+    }
 }
 
 // ── Callback global para el script GIS ──────────────────────────

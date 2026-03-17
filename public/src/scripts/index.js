@@ -1,3 +1,4 @@
+import HistoryManager from './HistoryManager.js';
 import { initAnimations, animateProductCards, initProductClickAnimations } from './animations.js';
 import { ProductGrid } from '../components/product/ProductGrid.js';
 import { MiniCart } from '../components/cart/MiniCart.js';
@@ -217,7 +218,10 @@ function setupUIInteractions() {
         checkoutBtn.addEventListener('click', procesarCompraWhatsApp);
     }
     if (closeCheckoutBtn && checkoutOverlay) {
-        closeCheckoutBtn.addEventListener('click', () => checkoutOverlay.classList.remove('active'));
+        closeCheckoutBtn.addEventListener('click', () => {
+            checkoutOverlay.classList.remove('active');
+            HistoryManager.closeManual('checkout');
+        });
     }
 
     // Mobile Menu Actions
@@ -227,11 +231,17 @@ function setupUIInteractions() {
     const mobileLinks = document.querySelectorAll('.mobile-link, .mobile-sublink');
 
     if (menuBtn && mobileMenu) {
-        menuBtn.addEventListener('click', () => mobileMenu.classList.add('active'));
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.add('active');
+            HistoryManager.pushState('menu', () => mobileMenu.classList.remove('active'));
+        });
     }
     
     if (closeMenuBtn && mobileMenu) {
-        closeMenuBtn.addEventListener('click', () => mobileMenu.classList.remove('active'));
+        closeMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+            HistoryManager.closeManual('menu');
+        });
     }
 
     // Smooth scroll and auto-close upon selecting a link
@@ -281,7 +291,10 @@ function setupUIInteractions() {
                 
                 setTimeout(() => {
                     const checkoutOverlay = document.getElementById('checkout-overlay');
-                    if (checkoutOverlay) checkoutOverlay.classList.remove('active');
+                    if (checkoutOverlay) {
+                        checkoutOverlay.classList.remove('active');
+                        HistoryManager.closeManual('checkout');
+                    }
                     
                     // Resetear Formulario
                     checkoutFormMinimal.reset();
