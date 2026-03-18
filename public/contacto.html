@@ -76,13 +76,13 @@
             <h1 class="contact-title">CONTACTO</h1>
 
             <div class="contact-form-card">
-                <form id="contact-form-main" class="contact-form">
+                <form action="https://formspree.io/f/mqaeovzv" method="POST" id="contact-form-main" class="contact-form">
                     <div class="form-row-desktop">
                         <div class="form-group">
                             <input type="text" id="name" name="name" class="form-input" placeholder="Nombre" required>
                         </div>
                         <div class="form-group">
-                            <input type="email" id="email" name="email" class="form-input" placeholder="Correo electrónico" required>
+                            <input type="email" id="email" name="_replyto" class="form-input" placeholder="Correo electrónico" required>
                         </div>
                     </div>
                     <div class="form-group">
@@ -93,6 +93,9 @@
                     </div>
                     
                     <button type="submit" class="btn-submit-contact pulse-anim">ENVIAR MENSAJE</button>
+                    <!-- Campos extra para Formspree -->
+                    <input type="hidden" name="_subject" value="Nuevo mensaje de contacto - Ellel Oversize">
+                    <input type="hidden" name="_next" value="https://elletshop.dev/contacto.html">
                 </form>
             </div>
 
@@ -117,6 +120,10 @@
         <footer class="minimal-footer">
             <div class="container">
                 <p class="footer-copy">&copy; 2026 Ellel Oversize</p>
+                <p class="footer-credits">Diseñado y Desarrollado por: <span class="developer-name">Willian David Ushiña</span></p>
+                <p class="footer-contact">¿Necesitas un sitio web? <br> 
+                    <a href="https://mail.google.com/mail/?view=cm&fs=1&to=willian.ushinia@upec.edu.ec" class="developer-contact-link" target="_blank" title="Escribir por Gmail">willian.ushinia@upec.edu.ec</a>
+                </p>
                 <div class="footer-links">
                     <a href="privacidad.html">Términos y políticas</a>
                 </div>

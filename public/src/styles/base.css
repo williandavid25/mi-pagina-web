@@ -377,6 +377,40 @@ button, input, select, textarea {
     transform: translateY(-3px);
 }
 
+/* Developer Credits */
+.footer-credits {
+    font-size: 0.9rem;
+    color: var(--color-text-body);
+    margin: 0.5rem 0;
+    opacity: 0.8;
+}
+
+.developer-name {
+    font-weight: 700;
+    color: var(--color-text-main);
+}
+
+.footer-contact {
+    font-size: 0.85rem;
+    margin-bottom: 1.5rem;
+}
+
+.developer-contact-link {
+    color: #0056b3;
+    text-decoration: underline;
+    font-weight: 800;
+    transition: all 0.3s ease;
+    display: inline-block;
+    padding: 2px 5px;
+}
+
+.developer-contact-link:hover {
+    color: var(--color-accent-purple);
+    background: rgba(111, 62, 205, 0.05);
+    border-radius: 4px;
+    transform: translateY(-1px);
+}
+
 /* Antigravity floating effect */
 .btn-antigravedad {
     animation: float 3.5s ease-in-out infinite;

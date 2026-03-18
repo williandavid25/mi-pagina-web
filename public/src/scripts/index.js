@@ -353,10 +353,6 @@ function setupUIInteractions() {
     
     // Interactive 360 Logo Rotation
     setupLogoRotation();
-
-
-
-
 }
 
 /**
