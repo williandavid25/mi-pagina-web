@@ -5,7 +5,7 @@ main = "worker/index.js"
 [[d1_databases]]
 binding = "DB"
 database_name = "ellel-db"
-database_id = "e9878183-e737-402f-b49e-4c9a5c54942a"
+database_id = "e204fb51bbefb45d71927bb1cda8fb7f"
 
 [assets]
 directory = "./public"
