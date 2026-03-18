@@ -6,6 +6,6 @@ main = "worker/index.js"
 binding = "DB"
 database_name = "ellel-db"
 database_id = "e204fb51bbefb45d71927bb1cda8fb7f"
-
+git add wrangler.toml
 [assets]
 directory = "./public"
