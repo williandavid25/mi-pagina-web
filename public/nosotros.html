@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="./src/styles/component-styles/Header.css">
     <link rel="stylesheet" href="./src/styles/component-styles/Auth.css">
     <link rel="stylesheet" href="./src/styles/component-styles/Search.css">
+    <link rel="stylesheet" href="./src/styles/component-styles/Cart.css">
     <link rel="stylesheet" href="./src/styles/component-styles/Checkout.css">
     <link rel="stylesheet" href="./src/styles/component-styles/Wishlist.css">
     <link rel="stylesheet" href="./src/styles/mobile.css">
@@ -303,7 +304,6 @@
 
         .footer-copy { font-size: 0.76rem; color: #aaa; }
     </style>
-    <link rel="stylesheet" href="./src/styles/component-styles/Search.css">
 </head>
 <body>
     <div id="app">
@@ -497,11 +497,12 @@
 
     <!-- Scripts: defer libera el Critical Rendering Path -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
     <script type="module">
         import { MiniCart } from './src/components/cart/MiniCart.js';
         import { WishlistDrawer } from './src/components/wishlist/WishlistDrawer.js';
         import { CheckoutModal } from './src/components/forms/CheckoutForm.js';
-        import { initCart } from './src/scripts/cartState.js';
+        import { initCart, openCart } from './src/scripts/cartState.js';
         import { initWishlist, openWishlist } from './src/scripts/wishlistState.js';
         import { AuthModal } from './src/components/auth/AuthModal.js';
         import { initGoogleAuth } from './src/scripts/auth.js';
@@ -531,6 +532,14 @@
             const mobileMenu = document.getElementById('mobile-menu');
             if (menuBtn && mobileMenu) menuBtn.addEventListener('click', () => mobileMenu.classList.add('active'));
             if (closeMenuBtn && mobileMenu) closeMenuBtn.addEventListener('click', () => mobileMenu.classList.remove('active'));
+
+            // Cart Toggle Buttons
+            document.querySelectorAll('.cart-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    openCart();
+                });
+            });
 
             // Wishlist Toggle Buttons (Header)
             document.querySelectorAll('.wishlist-btn-toggle').forEach(btn => {
